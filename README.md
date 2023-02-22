@@ -5,7 +5,7 @@ _This README contains basic information about the project and its artifacts. If 
 
 ## Team Members
 - Nyx Byrne
-- Reilly Lawson
+- MEMBER2
 - MEMBER3
 - MEMBER4
 - Professor Bierre
