@@ -47,6 +47,8 @@ namespace dash_game
 
             // TODO: use this.Content to load your game content here
             background = Content.Load<Texture2D>("background");
+
+            Texture2D spriteSheet = Content.Load<Texture2D>("SpriteBatchForDash");
             
         }
 
