@@ -12,6 +12,12 @@ namespace dash_game
         // Background texture
         private Texture2D background;
 
+        // Color for menu states
+        private Color shader = new Color(Color.Black, 0.5f);
+
+        // Fonts
+        private SpriteFont titleFont;
+
         // Enum for the gamestates
         private enum GameState
         {
@@ -47,6 +53,7 @@ namespace dash_game
 
             // TODO: use this.Content to load your game content here
             background = Content.Load<Texture2D>("background");
+            titleFont = Content.Load<SpriteFont>("mainFont");
 
             Texture2D spriteSheet = Content.Load<Texture2D>("SpriteBatchForDash");
             
@@ -94,6 +101,13 @@ namespace dash_game
             {
                 // Draws the title and displays buttons for actions
                 case GameState.Title:
+                    // Draws the backgound shader
+                    _spriteBatch.Draw(background, new Rectangle(0, 0, background.Width, background.Height), shader);
+
+                    // Title for the game
+                    _spriteBatch.DrawString(titleFont, "DASH", new Vector2(640, 200) - (titleFont.MeasureString("DASH") / 2), Color.Black);
+
+                    // Draw the buttons that when clicked will change the game state
                     break;
 
                 // Draws enemies, items, and the player for horde mode
@@ -106,10 +120,14 @@ namespace dash_game
 
                 // Draws everything for the pause menu
                 case GameState.Pause:
+                    // Draws the background shader
+                    _spriteBatch.Draw(background, new Rectangle(0, 0, background.Width, background.Height), shader);
                     break;
 
                 // Draws the game over screen
                 case GameState.GameOver:
+                    // Draws the background shader
+                    _spriteBatch.Draw(background, new Rectangle(0, 0, background.Width, background.Height), shader);
                     break;
             }
             _spriteBatch.End();
