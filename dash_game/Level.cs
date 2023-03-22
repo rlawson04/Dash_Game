@@ -9,8 +9,10 @@ namespace dash_game
 {
 	public class Level
 	{
-		public Level()
+		// Draw out the current level background
+		private void Draw()
 		{
+
 		}
 	}
 }

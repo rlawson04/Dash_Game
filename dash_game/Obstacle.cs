@@ -9,9 +9,7 @@ namespace dash_game
 {
 	public class Obstacle
 	{
-		public Obstacle()
-		{
-		}
+
 	}
 }
 
