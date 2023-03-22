@@ -15,12 +15,14 @@ namespace dash_game
         // Enum for the gamestates
         private enum GameState
         {
-            title,
-            horde,
-            classic,
-            pause,
-            gameOver
+            Title,
+            Horde,
+            Classic,
+            Pause,
+            GameOver
         }
+
+        private GameState currentState = GameState.Title;
 
         public Game1()
         {
@@ -32,6 +34,9 @@ namespace dash_game
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            _graphics.PreferredBackBufferWidth = 1280;
+            _graphics.PreferredBackBufferHeight = 736;
+            _graphics.ApplyChanges();
 
             base.Initialize();
         }
@@ -51,9 +56,23 @@ namespace dash_game
                 Exit();
 
             // TODO: Add your update logic here
-            _graphics.PreferredBackBufferHeight = background.Height;
-            _graphics.PreferredBackBufferWidth = background.Width;
-            _graphics.ApplyChanges();
+            switch (currentState)
+            {
+                case GameState.Title:
+                    break;
+
+                case GameState.Horde:
+                    break;
+
+                case GameState.Classic:
+                    break;
+
+                case GameState.Pause:
+                    break;
+
+                case GameState.GameOver:
+                    break;
+            }
 
             base.Update(gameTime);
         }
@@ -64,7 +83,33 @@ namespace dash_game
 
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
-            _spriteBatch.Draw(background, new Rectangle(0, 0, background.Width, background.Height), Color.White); // Background will always be drawn
+
+            // Background will always be drawn
+            _spriteBatch.Draw(background, new Rectangle(0, 0, background.Width, background.Height), Color.White);
+
+            // Logic for the enum
+            switch (currentState)
+            {
+                // Draws the title and displays buttons for actions
+                case GameState.Title:
+                    break;
+
+                // Draws enemies, items, and the player for horde mode
+                case GameState.Horde:
+                    break;
+
+                // Draws enemies, items, and the player for the classic mode
+                case GameState.Classic:
+                    break;
+
+                // Draws everything for the pause menu
+                case GameState.Pause:
+                    break;
+
+                // Draws the game over screen
+                case GameState.GameOver:
+                    break;
+            }
             _spriteBatch.End();
             base.Draw(gameTime);
         }
