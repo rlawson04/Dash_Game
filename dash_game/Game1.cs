@@ -17,18 +17,35 @@ namespace dash_game
 
         // Fonts
         private SpriteFont titleFont;
+        private SpriteFont gameFont;
+
+        // Menu buttons texture
+        private Texture2D button;
+
+        // Creation of different screens
+        TitleScreen titleScreen = new TitleScreen();
+
+        // Keyboard and mouse states
+        KeyboardState kbState;
+        MouseState mState;
+
+        KeyboardState kbPrevState;
+        MouseState mPrevState;
+
+        // An int that tracks what state to move to
+        private int state;
 
         // Enum for the gamestates
-        private enum GameState
+        public enum GameState
         {
             Title,
             Horde,
-            Classic,
+            Adventure,
             Pause,
             GameOver
         }
 
-        private GameState currentState = GameState.Title;
+        public GameState currentState = GameState.Title;
 
         public Game1()
         {
@@ -53,7 +70,9 @@ namespace dash_game
 
             // TODO: use this.Content to load your game content here
             background = Content.Load<Texture2D>("background");
+            button = Content.Load<Texture2D>("buttons");
             titleFont = Content.Load<SpriteFont>("mainFont");
+            gameFont = Content.Load<SpriteFont>("buttonFont");
 
             Texture2D spriteSheet = Content.Load<Texture2D>("SpriteBatchForDash");
             
@@ -65,24 +84,43 @@ namespace dash_game
                 Exit();
 
             // TODO: Add your update logic here
+            kbState = Keyboard.GetState();
+
             switch (currentState)
             {
                 case GameState.Title:
+                    // Runs the title screen update method and 
+                    state = titleScreen.Update();
+                    if (state != 10)
+                    {
+                        currentState = (GameState)state;
+                    }
                     break;
 
                 case GameState.Horde:
                     break;
 
-                case GameState.Classic:
+                case GameState.Adventure:
+                    // Currently will just run the GameOver logic as this feature will not be implemented in sprint 2
+                    if (kbState.IsKeyUp(Keys.Space) && kbPrevState.IsKeyDown(Keys.Space))
+                    {
+                        currentState = GameState.Title;
+                    }
                     break;
 
                 case GameState.Pause:
                     break;
 
                 case GameState.GameOver:
+                    // Checks if the user has pressed the spacebar and sends them back to the title screen
+                    if (kbState.IsKeyUp(Keys.Space) && kbPrevState.IsKeyDown(Keys.Space))
+                    {
+                        currentState = GameState.Title;
+                    }
                     break;
             }
 
+            kbPrevState = kbState;
             base.Update(gameTime);
         }
 
@@ -108,6 +146,7 @@ namespace dash_game
                     _spriteBatch.DrawString(titleFont, "DASH", new Vector2(640, 200) - (titleFont.MeasureString("DASH") / 2), Color.Black);
 
                     // Draw the buttons that when clicked will change the game state
+                    titleScreen.Draw(_spriteBatch, button);
                     break;
 
                 // Draws enemies, items, and the player for horde mode
@@ -115,7 +154,13 @@ namespace dash_game
                     break;
 
                 // Draws enemies, items, and the player for the classic mode
-                case GameState.Classic:
+                case GameState.Adventure:
+                    // Not implemented yet, draws placeholder text
+                    _spriteBatch.DrawString(gameFont, "Game mode has not been implemented yet",
+                        new Vector2(640, 400) - (gameFont.MeasureString("Game mode has not been implemented yet") / 2), Color.Black);
+
+                    _spriteBatch.DrawString(gameFont, "Press space to return to title screen",
+                        new Vector2(640, 500) - (gameFont.MeasureString("Press space to return to title screen") / 2), Color.Black);
                     break;
 
                 // Draws everything for the pause menu
@@ -128,6 +173,11 @@ namespace dash_game
                 case GameState.GameOver:
                     // Draws the background shader
                     _spriteBatch.Draw(background, new Rectangle(0, 0, background.Width, background.Height), shader);
+
+                    // Draws a game over message
+                    _spriteBatch.DrawString(titleFont, "GAME OVER", new Vector2(640, 368) - (titleFont.MeasureString("GAME OVER") / 2), Color.Black);
+                    _spriteBatch.DrawString(gameFont, "Press space to return to title screen",
+                        new Vector2(640, 500) - (gameFont.MeasureString("Press space to return to title screen") / 2), Color.Black);
                     break;
             }
             _spriteBatch.End();
