@@ -41,7 +41,7 @@ namespace dash_game
             Title,
             Horde,
             Adventure,
-            Pause,
+            Stats,
             GameOver
         }
 
@@ -108,7 +108,7 @@ namespace dash_game
                     }
                     break;
 
-                case GameState.Pause:
+                case GameState.Stats:
                     break;
 
                 case GameState.GameOver:
@@ -146,7 +146,7 @@ namespace dash_game
                     _spriteBatch.DrawString(titleFont, "DASH", new Vector2(640, 200) - (titleFont.MeasureString("DASH") / 2), Color.Black);
 
                     // Draw the buttons that when clicked will change the game state
-                    titleScreen.Draw(_spriteBatch, button);
+                    titleScreen.Draw(_spriteBatch, button, gameFont);
                     break;
 
                 // Draws enemies, items, and the player for horde mode
@@ -164,7 +164,7 @@ namespace dash_game
                     break;
 
                 // Draws everything for the pause menu
-                case GameState.Pause:
+                case GameState.Stats:
                     // Draws the background shader
                     _spriteBatch.Draw(background, new Rectangle(0, 0, background.Width, background.Height), shader);
                     break;
