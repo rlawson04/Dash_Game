@@ -33,29 +33,27 @@ namespace dash_game
 		// Properties
 		// -------------------------------
 
-
-		/// <summary>
-		/// Gets or sets the current state of the player 
-		/// </summary>
-		public PlayerState State
+        /// <summary>
+        /// Get and set property to determine if the player is dashing, or to change it
+        /// </summary>
+        public bool isDashing
         {
-			get { return state; }
-			set { state = value; }
+            get { return dashing; }
+            set { dashing = value; }
         }
-
 
 		// -------------------------------
 		// Constructor
 		// -------------------------------
 
 		/// <summary>
-		/// Parameterized constructor for the player class
-		/// </summary>
-		/// <param name="health"> takes in an int for the player's health </param>
-		/// <param name="rect"> takes in a rectangle to handle collision </param>
-		/// <param name="spriteSheet"> takes in loaded content for animation </param>
-		/// <param name="playerPostition"> takes in a vector2 to keep track of postion </param>
-		/// <param name="startingState"> takes in the enum for animation directions </param>
+        /// Parameterized constructor for the Player child class
+        /// </summary>
+        /// <param name="health"> takes an int to set as the health value </param>
+        /// <param name="characterPosition"> takes a vector 2 to keep track of the location </param>
+        /// <param name="rect"> takes a rectangle to check collision </param>
+        /// <param name="spriteSheet"> takes a texture2D for drawing and animating </param>
+        /// <param name="startingState"> takes the current state for animation </param>
 		public Player(int health, Vector2 characterPosition, Rectangle rect, Texture2D spriteSheet,  PlayerState startingState)
 			: base(health, characterPosition, rect, spriteSheet, startingState)
 		{ 
@@ -75,41 +73,54 @@ namespace dash_game
 		// Methods
 		// -------------------------------
 
+        /// <summary>
+        /// Updates the player's movement, dashing, and collision
+        /// </summary>
+        /// <param name="enemy"> takes an instance of the enemy class </param>
+        /// <param name="kbState"> takes the game classes current kbstate </param>
+        /// <param name="kbPrevState"> takes the game classes previous kbstate </param>
 		public void Update(Enemy enemy, KeyboardState kbState, KeyboardState kbPrevState)
 		{
-            Movement();
+            Movement(kbState);
             Dash(kbState, kbPrevState);
 			CheckCollision(enemy);
 
         }
 
+        /// <summary>
+        /// Draws the character from the spritesheet and scales to size
+        /// </summary>
+        /// <param name="spriteBatch"> takes the spritebatch from the game's draw method </param>
 		public void Draw(SpriteBatch spriteBatch)
 		{
-			spriteBatch.Draw(spriteSheet, characterPosition, new Rectangle(0, 100, 25, 25), Color.White, 0, Vector2.Zero, 4f, SpriteEffects.None, 0);
+			spriteBatch.Draw(spriteSheet, characterPosition, 
+                new Rectangle(0, 100, 25, 25), 
+                Color.White, 0, Vector2.Zero, 4f, 
+                SpriteEffects.None, 0);
 		}
 
-		public void Movement()
+        /// <summary>
+        /// Handles the movement in the 4 directions
+        /// </summary>
+		public void Movement(KeyboardState kbState)
 		{
-            // State for the keyboard
-            KeyboardState state = Keyboard.GetState();
-
-            // Moves the player based on each of the four inputs
-            if (state.IsKeyDown(Keys.W) == true)
+            // Moves the player position and rectangle based on each of the four inputs
+            if (kbState.IsKeyDown(Keys.W) == true)
             {
                 characterPosition.Y -= movementSpeed;
                 rect.Y -= movementSpeed;
             }
-            if (state.IsKeyDown(Keys.A) == true)
+            if (kbState.IsKeyDown(Keys.A) == true)
             {
 				characterPosition.X -= movementSpeed;	
                 this.rect.X -= movementSpeed;
             }
-            if (state.IsKeyDown(Keys.S) == true)
+            if (kbState.IsKeyDown(Keys.S) == true)
             {
 				characterPosition.Y += movementSpeed;
                 rect.Y += movementSpeed;
             }
-            if (state.IsKeyDown(Keys.D) == true)
+            if (kbState.IsKeyDown(Keys.D) == true)
             {
 				characterPosition.X += movementSpeed;
                 rect.X += movementSpeed;
@@ -117,8 +128,13 @@ namespace dash_game
             
         }
 
+        /// <summary>
+        /// Checks the collision with the enemy and alters health value
+        /// </summary>
+        /// <param name="enemy"> takes in an instance of the enemy class </param>
         public void CheckCollision(Enemy enemy)
         {
+            // When they intersect decrement health
 			if(this.rect.Intersects(enemy.Rect))
 			{
 				health--;
@@ -126,26 +142,36 @@ namespace dash_game
 				
         }
 
+        /// <summary>
+        /// Dashes in the direction being moved when space is pressed
+        /// </summary>
+        /// <param name="kbState"> takes the current state from the game class </param>
+        /// <param name="kbPrevState"> takes the previous state from the game class </param>
 		public void Dash(KeyboardState kbState, KeyboardState kbPrevState)
 		{
             
-
-            if (kbState.IsKeyDown(Keys.W) == true && kbState.IsKeyDown(Keys.Space) == true && kbPrevState.IsKeyUp(Keys.Space) == true)
+            // Checks the direction the player is moving and
+            // then checks if space was pressed once for all directions
+            if (kbState.IsKeyDown(Keys.W) == true && kbState.IsKeyDown(Keys.Space) == true
+                && kbPrevState.IsKeyUp(Keys.Space) == true)
             {
                 characterPosition.Y -= movementSpeed *15;
                 rect.Y -= movementSpeed * 15;
             }
-            if (kbState.IsKeyDown(Keys.A) == true && kbState.IsKeyDown(Keys.Space) == true && kbPrevState.IsKeyUp(Keys.Space) == true)
+            if (kbState.IsKeyDown(Keys.A) == true && kbState.IsKeyDown(Keys.Space) == true
+                && kbPrevState.IsKeyUp(Keys.Space) == true)
             {
                 characterPosition.X -= movementSpeed * 15;
                 this.rect.X -= movementSpeed * 15;
             }
-            if (kbState.IsKeyDown(Keys.S) == true && kbState.IsKeyDown(Keys.Space) == true && kbPrevState.IsKeyUp(Keys.Space) == true)
+            if (kbState.IsKeyDown(Keys.S) == true && kbState.IsKeyDown(Keys.Space) == true
+                && kbPrevState.IsKeyUp(Keys.Space) == true)
             {
                 characterPosition.Y += movementSpeed * 15;
                 rect.Y += movementSpeed * 15;
             }
-            if (kbState.IsKeyDown(Keys.D) == true && kbState.IsKeyDown(Keys.Space) == true && kbPrevState.IsKeyUp(Keys.Space) == true)
+            if (kbState.IsKeyDown(Keys.D) == true && kbState.IsKeyDown(Keys.Space) == true
+                && kbPrevState.IsKeyUp(Keys.Space) == true)
             {
                 characterPosition.X += movementSpeed * 15;
                 rect.X += movementSpeed * 15;
