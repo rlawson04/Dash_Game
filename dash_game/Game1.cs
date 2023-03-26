@@ -24,6 +24,7 @@ namespace dash_game
 
         // Creation of different screens
         TitleScreen titleScreen = new TitleScreen();
+        Horde horde;
 
         // Keyboard and mouse states
         KeyboardState kbState;
@@ -34,6 +35,9 @@ namespace dash_game
 
         // An int that tracks what state to move to
         private int state;
+
+        // Bool to see if the game is paused
+        private bool paused = false;
 
         // Enum for the gamestates
         public enum GameState
@@ -83,6 +87,8 @@ namespace dash_game
             Texture2D spriteSheet = Content.Load<Texture2D>("SpriteBatchForDash");
             player = new Player(100, new Vector2(300,300), new Rectangle(300, 300, 25, 25), spriteSheet, PlayerState.Idle);
             enemy = new Enemy(100, new Vector2(600, 600), new Rectangle(600, 600, 25, 25), spriteSheet, PlayerState.Idle, false, "ninja");
+
+            horde = new Horde(spriteSheet, player, _spriteBatch);
         }
 
         protected override void Update(GameTime gameTime)
@@ -107,12 +113,26 @@ namespace dash_game
                     break;
 
                 case GameState.Horde:
-                    // Commented out the health dropping below zero for testing
-                    //if (player.Health > 0)
-                    //{
+                    // Update the players movement
+                    if (!paused)
+                    {
                         player.Update(enemy, kbState, kbPrevState);
-                        
-                    //}
+                        horde.Update();
+
+                        if (player.Health <= 0)
+                        {
+                            currentState = GameState.GameOver;
+                        }
+                    }
+
+                    if (kbState.IsKeyUp(Keys.P) && kbPrevState.IsKeyDown(Keys.P) && !paused)
+                    {
+                        paused = true;
+                    }
+                    else if (kbState.IsKeyUp(Keys.P) && kbPrevState.IsKeyDown(Keys.P) && paused)
+                    {
+                        paused = false;
+                    }
                     break;
 
                 case GameState.Adventure:
@@ -166,10 +186,22 @@ namespace dash_game
 
                 // Draws enemies, items, and the player for horde mode
                 case GameState.Horde:
-                    // Drawing the player and enemy as well as the current player health for testing collision
+                    // Drawing the player and enemies
                     player.Draw(_spriteBatch);
-                    enemy.Draw(_spriteBatch);
-                    _spriteBatch.DrawString(titleFont, player.Health.ToString(), Vector2.Zero, Color.Black);
+                    horde.Draw();
+
+                    // Draw the score up in the top right
+                    _spriteBatch.DrawString(gameFont, "Score " + horde.Score.ToString(), new Vector2(1050, 0), Color.Black);
+                    _spriteBatch.DrawString(gameFont, "Wave " + horde.Wave.ToString(), new Vector2(0, 0), Color.Black);
+                    _spriteBatch.DrawString(gameFont, "Press P to pause", new Vector2(0, 25), Color.Black);
+
+                    // Draws certain elements based on the game being paused
+                    if (paused)
+                    {
+                        _spriteBatch.Draw(background, new Rectangle(0, 0, background.Width, background.Height), shader);
+                        _spriteBatch.DrawString(titleFont, "Paused", new Vector2(640, 400) - (titleFont.MeasureString("Paused") / 2), Color.Black);
+                        _spriteBatch.DrawString(gameFont, "Press P to un-pause", new Vector2(640, 500) - (gameFont.MeasureString("Press P to un-pause") / 2), Color.Black);
+                    }
                     break;
 
                 // Draws enemies, items, and the player for the classic mode
