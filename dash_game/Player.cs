@@ -34,6 +34,16 @@ namespace dash_game
 		// -------------------------------
 
         /// <summary>
+        /// Gets and  sets the movement speed of the player
+        /// </summary>
+        public int MovementSpeed
+        {
+            get { return movementSpeed; }
+            set { movementSpeed = value; }
+
+        }
+
+        /// <summary>
         /// Get and set property to determine if the player is dashing, or to change it
         /// </summary>
         public bool isDashing

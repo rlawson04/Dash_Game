@@ -1,7 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-
+using System.Xml;
+using System;
 namespace dash_game
 {
     public class Game1 : Game
@@ -49,6 +50,9 @@ namespace dash_game
         private Player player;
         private Enemy enemy;
 
+        // Item declaration and random for spawn location
+        private Items item;
+        private Random random;
         public GameState currentState = GameState.Title;
 
         public Game1()
@@ -81,8 +85,14 @@ namespace dash_game
             // Location, Sprite sheet, and player initialization
             Vector2 playerLoc = new Vector2(300f, 300f);
             Texture2D spriteSheet = Content.Load<Texture2D>("SpriteBatchForDash");
+            Texture2D speedArrow = Content.Load<Texture2D>("SpriteBatchForDash");
             player = new Player(100, new Vector2(300,300), new Rectangle(300, 300, 25, 25), spriteSheet, PlayerState.Idle);
             enemy = new Enemy(100, new Vector2(600, 600), new Rectangle(600, 600, 25, 25), spriteSheet, PlayerState.Idle, false, "ninja");
+
+            // Item to test
+            random = new Random();
+            item = new Items(new Rectangle(random.Next(100, 500), random.Next(100, 500), 25, 25), "Speed Boost", false, speedArrow);
+            
         }
 
         protected override void Update(GameTime gameTime)
@@ -92,8 +102,6 @@ namespace dash_game
 
             // TODO: Add your update logic here
             kbState = Keyboard.GetState();
-
-            
              
             switch (currentState)
             {
@@ -111,7 +119,7 @@ namespace dash_game
                     //if (player.Health > 0)
                     //{
                         player.Update(enemy, kbState, kbPrevState);
-                        
+                    item.CheckCollision(player);
                     //}
                     break;
 
@@ -170,6 +178,13 @@ namespace dash_game
                     player.Draw(_spriteBatch);
                     enemy.Draw(_spriteBatch);
                     _spriteBatch.DrawString(titleFont, player.Health.ToString(), Vector2.Zero, Color.Black);
+
+                    if (item.PickedUp == false) 
+                    {
+                        item.Draw(_spriteBatch);
+                    }
+                    
+                    
                     break;
 
                 // Draws enemies, items, and the player for the classic mode
