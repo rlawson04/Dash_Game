@@ -89,9 +89,9 @@ namespace dash_game
             // Location, Sprite sheet, and player initialization
             Vector2 playerLoc = new Vector2(300f, 300f);
             Texture2D spriteSheet = Content.Load<Texture2D>("SpriteBatchForDash");
-            Texture2D speedArrow = Content.Load<Texture2D>("SpriteBatchForDash");
+            Texture2D speedArrow = Content.Load<Texture2D>("Speed Arrow");
             player = new Player(100, new Vector2(300,300), new Rectangle(300, 300, 25, 25), spriteSheet, PlayerState.Idle);
-            enemy = new Enemy(100, new Vector2(600, 600), new Rectangle(600, 600, 25, 25), spriteSheet, PlayerState.Idle, false, "ninja");
+            
 
             // Item to test
             random = new Random();
@@ -198,8 +198,6 @@ namespace dash_game
                 case GameState.Horde:
                     // Drawing the player and enemies
                     player.Draw(_spriteBatch);
-                    enemy.Draw(_spriteBatch);
-                    _spriteBatch.DrawString(titleFont, player.Health.ToString(), Vector2.Zero, Color.Black);
 
                     if (item.PickedUp == false) 
                     {

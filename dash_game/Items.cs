@@ -64,18 +64,22 @@ namespace dash_game
         // Methods
         // -------------------------------
 
+        /// <summary>
+        /// Draws the item at the randomly generated location
+        /// </summary>
+        /// <param name="spriteBatch"> takes in a texture for the item </param>
         public void Draw(SpriteBatch spriteBatch)
         {
-            // 1280 width, 736 height
-            spriteBatch.Draw(texture, new Vector2 (rect.X, rect.Y),
-                new Rectangle(0, 100, 25, 25), Color.White, 0, Vector2.Zero, 3.0f,
+            
+            spriteBatch.Draw(texture, new Vector2(rect.X, rect.Y),
+                new Rectangle(0, 0, 5000, 5000), Color.White, 0, Vector2.Zero, 0.015f,
                 SpriteEffects.None, 0);
         }
 
         /// <summary>
         /// Uses rectangle intersection to check collision with player
         /// </summary>
-        /// <param name="player"></param>
+        /// <param name="player"> takes the player instance from the game </param>
         public void CheckCollision(Player player)
         {
             // When they intersect decrement health
@@ -91,7 +95,7 @@ namespace dash_game
         /// <summary>
         /// Used with check collision to apply power ups
         /// </summary>
-        /// <param name="player"></param>
+        /// <param name="player"> takes the player instance from the game </param>
         public void PowerUp(Player player)
         {
             // Switch based on the type of power up

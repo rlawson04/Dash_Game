@@ -102,7 +102,7 @@ namespace dash_game
 		{
             Movement(kbState);
             Dash(kbState, kbPrevState);
-			CheckCollision(enemy);
+			
 
         }
 
@@ -147,19 +147,6 @@ namespace dash_game
             
         }
 
-        /// <summary>
-        /// Checks the collision with the enemy and alters health value
-        /// </summary>
-        /// <param name="enemy"> takes in an instance of the enemy class </param>
-        public void CheckCollision(Enemy enemy)
-        {
-            // When they intersect decrement health
-			if(this.rect.Intersects(enemy.Rect))
-			{
-				health--;
-			}
-				
-        }
 
         /// <summary>
         /// Dashes in the direction being moved when space is pressed
