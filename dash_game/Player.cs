@@ -10,61 +10,29 @@ using Microsoft.Xna.Framework.Input;
 
 namespace dash_game
 {
-	public class Player : Character
-	{
-		// Enum
-		public enum PlayerState
-		{
-			RunningLeft, // Animations for running
-			RunningRight,
-			RunningUp,
-			RunningDown,
-			Dashing,
-			Idle, // Handles the idle animation 
-		}
+    // Enum
+    public enum PlayerState
+    {
+        RunningLeft, // Animations for running
+        RunningRight,
+        RunningUp,
+        RunningDown,
+        Dashing,
+        Idle, // Handles the idle animation 
+    }
 
+    public class Player : Character
+	{
 		// -------------------------------
 		// Fields
 		// -------------------------------
-		
-		// Health and rectangle for collision
-		private int health;
-		private Rectangle rect;
 
-		// Postion and state of player
-		private Vector2 playerPosition;
-		private PlayerState state;
-		
-		// To handle animation 
-		private Texture2D spriteSheet;
-		private int frame;
-		private double timeCounter;
-		private double fps;
-		private double timePerFrame;
-		
+		private bool dashing;
 
 		// -------------------------------
 		// Properties
 		// -------------------------------
 
-		/// <summary>
-		/// Gets the current health of the player or sets it to the new value
-		/// </summary>
-		public int Health
-		{
-			get { return health; }
-			set { health = value; }
-		}
-
-
-		/// <summary>
-		/// Gets or sets the rectangle of the Player for collision
-		/// </summary>
-		public Rectangle Rect 
-		{ 
-			get { return rect; }
-			set { rect = value; }
-		}
 
 		/// <summary>
 		/// Gets or sets the current state of the player 
@@ -74,15 +42,6 @@ namespace dash_game
 			get { return state; }
 			set { state = value; }
         }
-
-		/// <summary>
-		/// Get and set the current location of the player
-		/// </summary>
-		public float X
-		{
-			get { return this.playerPosition.X; }
-			set { this.playerPosition.X = value; }
-		}
 
 
 		// -------------------------------
@@ -97,12 +56,13 @@ namespace dash_game
 		/// <param name="spriteSheet"> takes in loaded content for animation </param>
 		/// <param name="playerPostition"> takes in a vector2 to keep track of postion </param>
 		/// <param name="startingState"> takes in the enum for animation directions </param>
-		public Player(int health, Rectangle rect, Texture2D spriteSheet, Vector2 playerPostition, PlayerState startingState)
+		public Player(int health, Vector2 characterPosition, Rectangle rect, Texture2D spriteSheet,  PlayerState startingState)
+			: base(health, characterPosition, rect, spriteSheet, startingState)
 		{ 
 			this.health = health;
+			this.characterPosition = characterPosition;
 			this.rect = rect;
 			this.spriteSheet = spriteSheet;
-			this.playerPosition = playerPostition;
 			this.state = startingState;
 
 			// Initialize
@@ -115,7 +75,83 @@ namespace dash_game
 		// Methods
 		// -------------------------------
 
-	}
+		public void Update(Enemy enemy, KeyboardState kbState, KeyboardState kbPrevState)
+		{
+            Movement();
+            Dash(kbState, kbPrevState);
+			CheckCollision(enemy);
+
+        }
+
+		public void Draw(SpriteBatch spriteBatch)
+		{
+			spriteBatch.Draw(spriteSheet, characterPosition, new Rectangle(0, 100, 25, 25), Color.White, 0, Vector2.Zero, 4f, SpriteEffects.None, 0);
+		}
+
+		public void Movement()
+		{
+            // State for the keyboard
+            KeyboardState state = Keyboard.GetState();
+
+            // Moves the player based on each of the four inputs
+            if (state.IsKeyDown(Keys.W) == true)
+            {
+                characterPosition.Y -= movementSpeed;
+                rect.Y -= movementSpeed;
+            }
+            if (state.IsKeyDown(Keys.A) == true)
+            {
+				characterPosition.X -= movementSpeed;	
+                this.rect.X -= movementSpeed;
+            }
+            if (state.IsKeyDown(Keys.S) == true)
+            {
+				characterPosition.Y += movementSpeed;
+                rect.Y += movementSpeed;
+            }
+            if (state.IsKeyDown(Keys.D) == true)
+            {
+				characterPosition.X += movementSpeed;
+                rect.X += movementSpeed;
+            }
+            
+        }
+
+        public void CheckCollision(Enemy enemy)
+        {
+			if(this.rect.Intersects(enemy.Rect))
+			{
+				health--;
+			}
+				
+        }
+
+		public void Dash(KeyboardState kbState, KeyboardState kbPrevState)
+		{
+            
+
+            if (kbState.IsKeyDown(Keys.W) == true && kbState.IsKeyDown(Keys.Space) == true && kbPrevState.IsKeyUp(Keys.Space) == true)
+            {
+                characterPosition.Y -= movementSpeed *15;
+                rect.Y -= movementSpeed * 15;
+            }
+            if (kbState.IsKeyDown(Keys.A) == true && kbState.IsKeyDown(Keys.Space) == true && kbPrevState.IsKeyUp(Keys.Space) == true)
+            {
+                characterPosition.X -= movementSpeed * 15;
+                this.rect.X -= movementSpeed * 15;
+            }
+            if (kbState.IsKeyDown(Keys.S) == true && kbState.IsKeyDown(Keys.Space) == true && kbPrevState.IsKeyUp(Keys.Space) == true)
+            {
+                characterPosition.Y += movementSpeed * 15;
+                rect.Y += movementSpeed * 15;
+            }
+            if (kbState.IsKeyDown(Keys.D) == true && kbState.IsKeyDown(Keys.Space) == true && kbPrevState.IsKeyUp(Keys.Space) == true)
+            {
+                characterPosition.X += movementSpeed * 15;
+                rect.X += movementSpeed * 15;
+            }
+        }
+    }
 }
 
 

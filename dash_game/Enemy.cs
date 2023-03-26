@@ -15,8 +15,8 @@ namespace dash_game
 		// -------------------------------
 		// Fields
 		// -------------------------------
-		private int health;
-		private Rectangle rect;
+		
+		// Specific information for the enemy
 		private string enemyType;
 		private bool isBoss;
 
@@ -24,23 +24,6 @@ namespace dash_game
 		// Properties
 		// -------------------------------
 
-		/// <summary>
-		/// Gets the current health of the player or sets it to the new value
-		/// </summary>
-		public int Health
-		{
-			get { return health; }
-			set { health = value; }
-		}
-
-		/// <summary>
-		/// Gets or sets the rectangle of the character for collision
-		/// </summary>
-		public Rectangle Rect
-        {
-			get { return rect; }
-			set { rect = value; }
-        }
 		/// <summary>
 		/// Gets the type of the enemy or sets their type
 		/// </summary>
@@ -59,23 +42,46 @@ namespace dash_game
 			set { isBoss = value; }
 		}
 
-		// -------------------------------
-		//Constructor
-		// -------------------------------
+        // -------------------------------
+        //Constructor
+        // -------------------------------
+
+        /// <summary>
+        /// Parameterized constructor for the Enemy child class
+        /// </summary>
+        /// <param name="health"> takes an int to set as the health value </param>
+        /// <param name="characterPosition"> takes a vector 2 to keep track of the location </param>
+        /// <param name="rect"> takes a rectangle to check collision </param>
+        /// <param name="spriteSheet"> takes a texture2D for drawing and animating </param>
+        /// <param name="startingState"> takes the current state for animation </param>
+        public Enemy(int health, Vector2 characterPosition, Rectangle rect, Texture2D spriteSheet, PlayerState startingState, bool isBoss, string enemyType)
+            : base(health, characterPosition, rect, spriteSheet,  startingState)
+		{
+            this.health = health;
+			this.characterPosition = characterPosition;
+            this.rect = rect;
+            this.spriteSheet = spriteSheet;
+            this.state = startingState;
+			this.isBoss = isBoss;
+			this.enemyType = enemyType;
+
+            // Initialize
+            fps = 10.0;                 // Cycles through at 10 run frames per second
+            timePerFrame = 1.0 / fps;   // amount of time in a single image
+        }
+
+        // -------------------------------
+        // Methods
+        // -------------------------------
 
 		/// <summary>
-		/// Parameterized constructor for the player class 
+		/// Draws the enemy from the sprite sheet and alters its color and size
 		/// </summary>
-		/// <param name="health"> takes an int to set the health of the player </param>
-		public Enemy(int health)
+		/// <param name="spriteBatch"></param>
+        public void Draw(SpriteBatch spriteBatch)
 		{
-			this.health = health;
-		}
-
-		// -------------------------------
-		// Methods
-		// -------------------------------
-
+            spriteBatch.Draw(spriteSheet, characterPosition, new Rectangle(0, 100, 25, 25), Color.Red, 0, Vector2.Zero, 4f, SpriteEffects.None, 0);
+        }
 	}
 }
 

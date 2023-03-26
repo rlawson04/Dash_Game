@@ -45,6 +45,10 @@ namespace dash_game
             GameOver
         }
 
+        // Player and enemy declarations
+        private Player player;
+        private Enemy enemy;
+
         public GameState currentState = GameState.Title;
 
         public Game1()
@@ -74,8 +78,11 @@ namespace dash_game
             titleFont = Content.Load<SpriteFont>("mainFont");
             gameFont = Content.Load<SpriteFont>("buttonFont");
 
+            // Location, Sprite sheet, and player initialization
+            Vector2 playerLoc = new Vector2(300f, 300f);
             Texture2D spriteSheet = Content.Load<Texture2D>("SpriteBatchForDash");
-            
+            player = new Player(100, new Vector2(300,300), new Rectangle(300, 300, 25, 25), spriteSheet, PlayerState.Idle);
+            enemy = new Enemy(100, new Vector2(600, 600), new Rectangle(600, 600, 25, 25), spriteSheet, PlayerState.Idle, false, "ninja");
         }
 
         protected override void Update(GameTime gameTime)
@@ -86,6 +93,8 @@ namespace dash_game
             // TODO: Add your update logic here
             kbState = Keyboard.GetState();
 
+            
+             
             switch (currentState)
             {
                 case GameState.Title:
@@ -98,6 +107,12 @@ namespace dash_game
                     break;
 
                 case GameState.Horde:
+                    // Commented out the health dropping below zero for testing
+                    //if (player.Health > 0)
+                    //{
+                        player.Update(enemy, kbState, kbPrevState);
+                        
+                    //}
                     break;
 
                 case GameState.Adventure:
@@ -151,6 +166,10 @@ namespace dash_game
 
                 // Draws enemies, items, and the player for horde mode
                 case GameState.Horde:
+                    // Drawing the player and enemy as well as the current player health for testing collision
+                    player.Draw(_spriteBatch);
+                    enemy.Draw(_spriteBatch);
+                    _spriteBatch.DrawString(titleFont, player.Health.ToString(), Vector2.Zero, Color.Black);
                     break;
 
                 // Draws enemies, items, and the player for the classic mode
@@ -183,5 +202,7 @@ namespace dash_game
             _spriteBatch.End();
             base.Draw(gameTime);
         }
+
+        
     }
 }
