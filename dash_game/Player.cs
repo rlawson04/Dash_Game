@@ -28,6 +28,7 @@ namespace dash_game
 		// -------------------------------
 
 		private bool dashing;
+        private int damage = 5;
 
 		// -------------------------------
 		// Properties
@@ -50,6 +51,14 @@ namespace dash_game
         {
             get { return dashing; }
             set { dashing = value; }
+        }
+
+        /// <summary>
+        /// Gets the players damage value
+        /// </summary>
+        public int Damage
+        {
+            get { return damage; }
         }
 
 		// -------------------------------
@@ -115,22 +124,22 @@ namespace dash_game
 		public void Movement(KeyboardState kbState)
 		{
             // Moves the player position and rectangle based on each of the four inputs
-            if (kbState.IsKeyDown(Keys.W) == true)
+            if (kbState.IsKeyDown(Keys.W) == true && characterPosition.Y > 98)
             {
                 characterPosition.Y -= movementSpeed;
                 rect.Y -= movementSpeed;
             }
-            if (kbState.IsKeyDown(Keys.A) == true)
+            if (kbState.IsKeyDown(Keys.A) == true && characterPosition.X > 32)
             {
 				characterPosition.X -= movementSpeed;	
                 this.rect.X -= movementSpeed;
             }
-            if (kbState.IsKeyDown(Keys.S) == true)
+            if (kbState.IsKeyDown(Keys.S) == true && (characterPosition.Y + rect.Height) < 605)
             {
 				characterPosition.Y += movementSpeed;
                 rect.Y += movementSpeed;
             }
-            if (kbState.IsKeyDown(Keys.D) == true)
+            if (kbState.IsKeyDown(Keys.D) == true && (characterPosition.X + rect.Width) < 1216)
             {
 				characterPosition.X += movementSpeed;
                 rect.X += movementSpeed;
@@ -165,7 +174,7 @@ namespace dash_game
             if (kbState.IsKeyDown(Keys.W) == true && kbState.IsKeyDown(Keys.Space) == true
                 && kbPrevState.IsKeyUp(Keys.Space) == true)
             {
-                characterPosition.Y -= movementSpeed *15;
+                characterPosition.Y -= movementSpeed * 15;
                 rect.Y -= movementSpeed * 15;
             }
             if (kbState.IsKeyDown(Keys.A) == true && kbState.IsKeyDown(Keys.Space) == true

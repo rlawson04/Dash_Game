@@ -72,6 +72,10 @@ namespace dash_game
                 SpriteEffects.None, 0);
         }
 
+        /// <summary>
+        /// Uses rectangle intersection to check collision with player
+        /// </summary>
+        /// <param name="player"></param>
         public void CheckCollision(Player player)
         {
             // When they intersect decrement health
@@ -85,11 +89,12 @@ namespace dash_game
         }
 
         /// <summary>
-        /// Used with check collision to 
+        /// Used with check collision to apply power ups
         /// </summary>
         /// <param name="player"></param>
         public void PowerUp(Player player)
         {
+            // Switch based on the type of power up
             switch (name)
             {
                 case "Speed Boost":
