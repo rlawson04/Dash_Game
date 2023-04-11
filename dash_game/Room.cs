@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Input;
 
 /* Name: Room
  * Purpose: Defines the logic for each room in the level
- * Modifications: Defined all of the logic for each type of room in the adventure mode
+ * Modifications: Defined all of the logic for each type of room in the adventure mode, added properties for each room
  */
 
 namespace dash_game
@@ -14,12 +14,12 @@ namespace dash_game
 	public class Room
 	{
 		// Enum for the room type
-		enum RoomType
+		public enum RoomType
 		{
 			Starting,
 			Battle,
 			Item,
-			Boss
+			Boss,
 		}
 
 		// Fields
@@ -32,7 +32,7 @@ namespace dash_game
 		private Room south;
 		private Room east;
 		private Room west;
-		private RoomType roomType;
+		private RoomType currentRoomType;
 		private bool cleared;
 
 		// Rectangles for the doors
@@ -57,8 +57,38 @@ namespace dash_game
 		KeyboardState kbState;
 		KeyboardState kbPrevState;
 
-		// Constructor
-		public Room(char data, Player player, Texture2D charSprites)
+		// Properties
+		public RoomType CurrentRoomType
+		{
+			get { return currentRoomType; }
+		}
+
+		public Room North
+		{
+			get { return north; }
+			set { north = value; }
+		}
+
+        public Room South
+        {
+			get { return south; }
+            set { south = value; }
+        }
+
+        public Room East
+        {
+			get { return east; }
+            set { east = value; }
+        }
+
+        public Room West
+        {
+			get { return west; }
+            set { west = value; }
+        }
+
+        // Constructor
+        public Room(char data, Player player, Texture2D charSprites)
 		{
 			// Set the player for the room
 			this.player = player;
@@ -84,7 +114,7 @@ namespace dash_game
                 }
 
                 // Set the room type
-                roomType = RoomType.Battle;
+                currentRoomType = RoomType.Battle;
 			}
 			// I stands for item, create an item room
 			else if (data == 'I')
@@ -92,7 +122,7 @@ namespace dash_game
 				// Create an item object in the middle of the room
 
 				// Set the room type
-				roomType = RoomType.Item;
+				currentRoomType = RoomType.Item;
 			}
 			// Boss rooms
 			else if (data == 'B')
@@ -107,13 +137,13 @@ namespace dash_game
 						"ninja"));
 
                 // Set the room type
-                roomType = RoomType.Boss;
+                currentRoomType = RoomType.Boss;
 			}
 			// Starting room, does not spawn anything
 			else if (data == 'S')
 			{
 				// Set the room type
-				roomType = RoomType.Starting;
+				currentRoomType = RoomType.Starting;
 			}
 		}
 
@@ -124,7 +154,7 @@ namespace dash_game
 		public void Update(Texture2D speedArrow)
 		{
 			// Switch for the room type
-			switch (roomType)
+			switch (currentRoomType)
 			{
 				case RoomType.Starting:
 					break;
@@ -198,7 +228,7 @@ namespace dash_game
 		public void Draw()
 		{
             // Switch for the room type
-            switch (roomType)
+            switch (currentRoomType)
             {
                 case RoomType.Battle:
 					// Draw each of the enemies
