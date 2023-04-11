@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Input;
 
 /* Name: Level
  * Purpose: Defines the logic for the maps
- * Modifications: Defined base logic
+ * Modifications: Added the fields necessary
  */
 
 namespace dash_game

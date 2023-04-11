@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using static System.Formats.Asn1.AsnWriter;
 
 /* Name: Room
  * Purpose: Defines the logic for each room in the level
- * Modifications: Initial Creation
+ * Modifications: Defined all of the logic for each type of room in the adventure mode
  */
 
 namespace dash_game
@@ -36,6 +35,12 @@ namespace dash_game
 		private RoomType roomType;
 		private bool cleared;
 
+		// Rectangles for the doors
+		private Rectangle northDoor;
+		private Rectangle southDoor;
+		private Rectangle eastDoor;
+		private Rectangle westDoor;
+
 		// Needed for draw method
 		private SpriteBatch spriteBatch;
 
@@ -44,6 +49,9 @@ namespace dash_game
 
 		// Instance of player that will be passed from the overall level
 		private Player player;
+
+		// Instance of an item that can be called upon in item rooms
+		private Items item;
 
 		// Keyboard States
 		KeyboardState kbState;
@@ -113,7 +121,7 @@ namespace dash_game
 		/// <summary>
 		/// Updates the room according to the room type
 		/// </summary>
-		public void Update()
+		public void Update(Texture2D speedArrow)
 		{
 			// Switch for the room type
 			switch (roomType)
@@ -144,9 +152,17 @@ namespace dash_game
                             player.Health += 50;
                         }
                     }
+
+					// Logic for clearing a room
+					if (enemies.Count == 0)
+					{
+						cleared = true;
+					}
                     break;
 
 				case RoomType.Item:
+					item = new Items(new Rectangle(rand.Next(100, 500), rand.Next(100, 500), 25, 25), "Speed Boost", false, speedArrow);
+					item.CheckCollision(player);
 					break;
 
 				case RoomType.Boss: // Runs the same logic as battle because the boss is currently treated as a special enemy
@@ -232,11 +248,31 @@ namespace dash_game
 		}
 
 		/// <summary>
-		/// Returns the new
+		/// Defines the logic of going through a door
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>Returns the room that the player has entered</returns>
 		public Room DoorLogic()
 		{
+			if (north != null && northDoor.Intersects(player.Rect))
+			{
+				return north;
+			}
+
+			if (south != null && southDoor.Intersects(player.Rect))
+			{
+				return south;
+			}
+
+			if (east != null && eastDoor.Intersects(player.Rect))
+			{
+				return east;
+			}
+
+			if (south != null && southDoor.Intersects(player.Rect))
+			{
+				return south;
+			}
+
 			return null;
 		}
 	}

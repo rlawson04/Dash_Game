@@ -3,10 +3,22 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Xml;
 using System;
+
 namespace dash_game
 {
     public class Game1 : Game
     {
+        // Enum for the gamestates
+        public enum GameState
+        {
+            Title,
+            Horde,
+            Adventure,
+            Stats,
+            GameOver
+        }
+
+        // Fields
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
@@ -39,16 +51,6 @@ namespace dash_game
 
         // Bool to see if the game is paused
         private bool paused = false;
-
-        // Enum for the gamestates
-        public enum GameState
-        {
-            Title,
-            Horde,
-            Adventure,
-            Stats,
-            GameOver
-        }
 
         // Player and enemy declarations
         private Player player;
