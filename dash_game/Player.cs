@@ -61,6 +61,14 @@ namespace dash_game
             get { return damage; }
         }
 
+        /// <summary>
+        /// Allows the game to alter the position of the player, used for doors in the adventure mode
+        /// </summary>
+        public Vector2 CharacterPosition
+        {
+            set { characterPosition = value; }
+        }
+
 		// -------------------------------
 		// Constructor
 		// -------------------------------
@@ -98,7 +106,7 @@ namespace dash_game
         /// <param name="enemy"> takes an instance of the enemy class </param>
         /// <param name="kbState"> takes the game classes current kbstate </param>
         /// <param name="kbPrevState"> takes the game classes previous kbstate </param>
-		public void Update(Enemy enemy, KeyboardState kbState, KeyboardState kbPrevState)
+		public void Update(KeyboardState kbState, KeyboardState kbPrevState)
 		{
             Movement(kbState);
             Dash(kbState, kbPrevState);

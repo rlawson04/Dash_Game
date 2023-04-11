@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Input;
 /* Name: Level
  * Purpose: Defines the logic for the maps
  * Modifications: Added the logic for reading in a file, currently will just load the trial that I have made because I have not created a gui for the adventure menu
+ * All logic for creating a level has been created and tested.
  */
 
 namespace dash_game
@@ -20,13 +21,16 @@ namespace dash_game
 		private string fileName;
 		private Player player;
 		private Texture2D charSprites;
+		private Texture2D itemSprites;
+		private SpriteBatch spriteBatch;
 
 		// Constructor
-		public Level(Player player, string fileName, Texture2D charSprites)
+		public Level(Player player, string fileName, Texture2D charSprites, Texture2D itemSprites, SpriteBatch spriteBatch)
 		{
 			this.player = player;
 			this.fileName = fileName;
 			this.charSprites = charSprites;
+			this.spriteBatch = spriteBatch;
 		}
 
 		// Methods
@@ -36,28 +40,33 @@ namespace dash_game
 		public void CreateLevel()
 		{
 			// Read the file that is taken in, currently will only open one file.
-			reader = new StreamReader("TrialLevel");
+			reader = new StreamReader("../../../Content/TrialLevel.txt");
 
 			// Create the array based on the first line of the file
 			string[] dimensions = reader.ReadLine().Split(",");
 			rooms = new Room[int.Parse(dimensions[0]), int.Parse(dimensions[1])];
+			char[] data;
 
 			// Fill in the array
 			for (int i = 0; i < rooms.GetLength(0); i++)
 			{
-				for (int j = 0; j < rooms.GetLength(1); j++)
+                data = reader.ReadLine().ToCharArray();
+                for (int j = 0; j < rooms.GetLength(1); j++)
 				{
-					char data = char.Parse(reader.Read().ToString());
-					if (data == 'X')
+					if (data[j] == 'X')
 					{
 						rooms[i, j] = null;
 					}
+					else if (data[j] == 'S')
+					{
+						rooms[i, j] = new Room(data[j], player, charSprites, spriteBatch);
+						current = rooms[i, j];
+					}
 					else
 					{
-						rooms[i, j] = new Room(data, player, charSprites);
+						rooms[i, j] = new Room(data[j], player, charSprites, spriteBatch);
 					}
 				}
-				reader.ReadLine();
 			}
 
 			// Close the reader
@@ -68,7 +77,7 @@ namespace dash_game
 			{
 				for (int j = 0; j < rooms.GetLength(1); j++)
 				{
-					if (rooms[i, j].CurrentRoomType == Room.RoomType.Starting)
+					if (rooms[i,j] != null && rooms[i, j].CurrentRoomType == Room.RoomType.Starting)
 					{
 						LinkRooms(rooms[i, j], i, j);
 					}
@@ -112,6 +121,49 @@ namespace dash_game
                 LinkRooms(rooms[row - 1, collumn], row - 1, collumn);
             }
         }
+
+		/// <summary>
+		/// Changes the room the player is in if they go through a door
+		/// </summary>
+		/// <param name="newRoom">The new room that the player will be sent to</param>
+		public void MoveRoom()
+		{
+			Room newRoom;
+			// If the player is intersecting with a door change the room
+			newRoom = current.DoorLogic();
+			if (newRoom != null)
+			{
+				current = newRoom;
+
+				// If the room is a battle room change cleared to false
+				if (current.CurrentRoomType == Room.RoomType.Battle || current.CurrentRoomType == Room.RoomType.Boss)
+				{
+					current.Cleared = false;
+				}
+				else
+				{
+					current.Cleared = true;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Calls all of the update methods of the current room
+		/// </summary>
+		public void Update()
+		{
+			current.Update(itemSprites);
+			current.DoorLogic();
+		}
+
+		/// <summary>
+		/// Calls all of the draw methods for the current room
+		/// </summary>
+		public void Draw()
+		{
+			current.Draw();
+			current.DrawDoors();
+		}
 	}
 }
 
