@@ -147,6 +147,17 @@ namespace dash_game
             
         }
 
+        public void DrawWalking(SpriteEffects flipSprite, SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(spriteSheet, 
+                this.characterPosition, 
+                new Rectangle(
+                    30,10,25,25
+                    ), 
+                Color.White, 0, 
+                Vector2.Zero, 4.0f, 
+                flipSprite, 0);
+        }
 
         /// <summary>
         /// Dashes in the direction being moved when space is pressed

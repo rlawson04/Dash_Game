@@ -211,7 +211,7 @@ namespace dash_game
                 // Draws enemies, items, and the player for horde mode
                 case GameState.Horde:
                     // Drawing the player and enemies
-                    player.Draw(_spriteBatch);
+                    player.DrawWalking(SpriteEffects.FlipHorizontally,_spriteBatch);
 
                     if (item.PickedUp == false) 
                     {
