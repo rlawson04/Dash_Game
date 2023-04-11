@@ -63,6 +63,9 @@ namespace dash_game
         private Random random;
         public GameState currentState = GameState.Title;
 
+        // Texture 2d for the doorsprites
+        private Texture2D doorTexture;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -95,15 +98,17 @@ namespace dash_game
             Texture2D spriteSheet = Content.Load<Texture2D>("SpriteBatchForDash");
             Texture2D speedArrow = Content.Load<Texture2D>("Speed Arrow");
             player = new Player(100, new Vector2(300,300), new Rectangle(300, 300, 25, 25), spriteSheet, PlayerState.Idle);
-            
+
+            // Texture for the doors in adventure
+            Texture2D doorTexture = Content.Load<Texture2D>("SpriteBatchForDash");
 
             // Item to test
             random = new Random();
             item = new Items(new Rectangle(random.Next(100, 500), random.Next(100, 500), 25, 25), "Speed Boost", false, speedArrow);
             
-
+            // Creation of both horde and level objects, done here so they can utilize sprites
             horde = new Horde(spriteSheet, player, _spriteBatch);
-            currentLevel = new Level(player, "TrialLevel", spriteSheet, speedArrow, _spriteBatch);
+            currentLevel = new Level(player, "TrialLevel", spriteSheet, speedArrow, _spriteBatch, doorTexture);
             currentLevel.CreateLevel();
         }
 

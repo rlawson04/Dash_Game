@@ -23,14 +23,16 @@ namespace dash_game
 		private Texture2D charSprites;
 		private Texture2D itemSprites;
 		private SpriteBatch spriteBatch;
+		private Texture2D doorTexture;
 
 		// Constructor
-		public Level(Player player, string fileName, Texture2D charSprites, Texture2D itemSprites, SpriteBatch spriteBatch)
+		public Level(Player player, string fileName, Texture2D charSprites, Texture2D itemSprites, SpriteBatch spriteBatch, Texture2D doorTexture)
 		{
 			this.player = player;
 			this.fileName = fileName;
 			this.charSprites = charSprites;
 			this.spriteBatch = spriteBatch;
+			this.doorTexture = doorTexture;
 		}
 
 		// Methods
@@ -59,12 +61,12 @@ namespace dash_game
 					}
 					else if (data[j] == 'S')
 					{
-						rooms[i, j] = new Room(data[j], player, charSprites, spriteBatch);
+						rooms[i, j] = new Room(data[j], player, charSprites, spriteBatch, doorTexture);
 						current = rooms[i, j];
 					}
 					else
 					{
-						rooms[i, j] = new Room(data[j], player, charSprites, spriteBatch);
+						rooms[i, j] = new Room(data[j], player, charSprites, spriteBatch, doorTexture);
 					}
 				}
 			}
@@ -94,31 +96,31 @@ namespace dash_game
 		public void LinkRooms(Room current, int row, int collumn)
 		{
 			// Check all nodes north of current node
-			if (rooms[row, collumn + 1] != null && current.North == null)
+			if (rooms[row - 1, collumn] != null && current.North == null)
 			{
-				current.North = rooms[row, collumn + 1];
-				LinkRooms(rooms[row, collumn + 1], row, collumn + 1);
+				current.North = rooms[row - 1, collumn];
+				LinkRooms(rooms[row - 1, collumn], row - 1, collumn);
 			}
 
 			// Check all nodes south of current node
-			if (rooms[row, collumn - 1] != null && current.South == null)
+			if (rooms[row + 1, collumn] != null && current.South == null)
             {
-                current.South = rooms[row, collumn - 1];
-                LinkRooms(rooms[row, collumn - 1], row, collumn - 1);
-            }
-
-            // Check all nodes east of current node
-            if (rooms[row + 1, collumn] != null && current.East == null)
-            {
-                current.East = rooms[row + 1, collumn];
+                current.South = rooms[row + 1, collumn];
                 LinkRooms(rooms[row + 1, collumn], row + 1, collumn);
             }
 
-			// Check all nodes west of current node
-			if (rooms[row - 1, collumn] != null && current.West == null)
+            // Check all nodes east of current node
+            if (rooms[row, collumn + 1] != null && current.East == null)
             {
-                current.West = rooms[row - 1, collumn];
-                LinkRooms(rooms[row - 1, collumn], row - 1, collumn);
+                current.East = rooms[row, collumn + 1];
+                LinkRooms(rooms[row, collumn + 1], row, collumn + 1);
+            }
+
+			// Check all nodes west of current node
+			if (rooms[row, collumn - 1] != null && current.West == null)
+            {
+                current.West = rooms[row, collumn - 1];
+                LinkRooms(rooms[row, collumn - 1], row, collumn - 1);
             }
         }
 
@@ -153,7 +155,6 @@ namespace dash_game
 		public void Update()
 		{
 			current.Update(itemSprites);
-			current.DoorLogic();
 		}
 
 		/// <summary>

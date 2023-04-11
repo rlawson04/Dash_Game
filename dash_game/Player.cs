@@ -110,7 +110,7 @@ namespace dash_game
 		{
             Movement(kbState);
             Dash(kbState, kbPrevState);
-			
+
 
         }
 
