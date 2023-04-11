@@ -48,7 +48,6 @@ namespace dash_game
             Adventure,
             Stats,
             GameOver
-            // Pause
         }
 
         // Player and enemy declarations
@@ -141,13 +140,11 @@ namespace dash_game
                         // Pause state is not yet emplemented
                         // currentState = GameState.Pause;
                     }
-                    // This may be changed once we get an actual pause state, since then we would put this there and change the state back
                     else if (kbState.IsKeyUp(Keys.P) && kbPrevState.IsKeyDown(Keys.P) && paused)
                     {
                         paused = false;
                     }
                     item.CheckCollision(player);
-                    //}
                     break;
 
                 case GameState.Adventure:
@@ -161,10 +158,7 @@ namespace dash_game
                     if (kbState.IsKeyUp(Keys.P) && kbPrevState.IsKeyDown(Keys.P) && !paused)
                     {
                         paused = true;
-                        // Pause state is not yet emplemented
-                        // currentState = GameState.Pause;
                     }
-                    // This may be changed once we get an actual pause state, since then we would put this there and change the state back
                     else if (kbState.IsKeyUp(Keys.P) && kbPrevState.IsKeyDown(Keys.P) && paused)
                     {
                         paused = false;
