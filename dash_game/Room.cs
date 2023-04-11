@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Input;
 
 /* Name: Room
  * Purpose: Defines the logic for each room in the level
- * Modifications: Defined all of the logic for each type of room in the adventure mode
+ * Modifications: Defined all of the logic for each type of room in the adventure mode, added properties for each room. Ensured that the player would be updated
  */
 
 namespace dash_game
@@ -14,12 +14,12 @@ namespace dash_game
 	public class Room
 	{
 		// Enum for the room type
-		enum RoomType
+		public enum RoomType
 		{
 			Starting,
 			Battle,
 			Item,
-			Boss
+			Boss,
 		}
 
 		// Fields
@@ -32,14 +32,15 @@ namespace dash_game
 		private Room south;
 		private Room east;
 		private Room west;
-		private RoomType roomType;
+		private RoomType currentRoomType;
 		private bool cleared;
 
-		// Rectangles for the doors
-		private Rectangle northDoor;
-		private Rectangle southDoor;
-		private Rectangle eastDoor;
-		private Rectangle westDoor;
+		// Rectangles for the doors and a texture
+		private Rectangle northDoor = new Rectangle((1223 / 2), 78, 25, 50);
+		private Rectangle southDoor = new Rectangle((1223 / 2), 663, 25, 50);
+		private Rectangle eastDoor = new Rectangle(1228, 339, 50, 25);
+		private Rectangle westDoor = new Rectangle(12, 339, 50, 25);
+		private Texture2D doorTexture;
 
 		// Needed for draw method
 		private SpriteBatch spriteBatch;
@@ -57,11 +58,48 @@ namespace dash_game
 		KeyboardState kbState;
 		KeyboardState kbPrevState;
 
-		// Constructor
-		public Room(char data, Player player, Texture2D charSprites)
+        // Properties
+        public RoomType CurrentRoomType
+		{
+			get { return currentRoomType; }
+		}
+
+		public Room North
+		{
+			get { return north; }
+			set { north = value; }
+		}
+
+        public Room South
+        {
+			get { return south; }
+            set { south = value; }
+        }
+
+        public Room East
+        {
+			get { return east; }
+            set { east = value; }
+        }
+
+        public Room West
+        {
+			get { return west; }
+            set { west = value; }
+        }
+
+		public bool Cleared
+		{
+			set { cleared = value; }
+		}
+
+        // Constructor
+        public Room(char data, Player player, Texture2D charSprites, SpriteBatch spriteBatch, Texture2D doorTexture)
 		{
 			// Set the player for the room
 			this.player = player;
+			this.spriteBatch = spriteBatch;
+			this.doorTexture = doorTexture;
 
 			// If data is a number, spawn the enemies
 			if (int.TryParse(data.ToString(), out numEnemies))
@@ -74,7 +112,7 @@ namespace dash_game
                     int yPos = rand.Next(98, (605 - 25));
 
                     // Add enemies for num enemies
-                    enemies.Add(new Enemy((15),
+                    enemies.Add(new Enemy(5,
                         new Vector2(xPos, yPos),
                         new Rectangle(xPos, yPos, 25, 25),
                         charSprites,
@@ -84,7 +122,7 @@ namespace dash_game
                 }
 
                 // Set the room type
-                roomType = RoomType.Battle;
+                currentRoomType = RoomType.Battle;
 			}
 			// I stands for item, create an item room
 			else if (data == 'I')
@@ -92,7 +130,7 @@ namespace dash_game
 				// Create an item object in the middle of the room
 
 				// Set the room type
-				roomType = RoomType.Item;
+				currentRoomType = RoomType.Item;
 			}
 			// Boss rooms
 			else if (data == 'B')
@@ -100,20 +138,20 @@ namespace dash_game
 				// Add the boss enemy as the only enemy in the list
 				enemies.Add(new Enemy(50,
 						new Vector2(500, 400),
-						new Rectangle(500, 400, 50, 50),
+						new Rectangle(500, 400, 100, 100),
 						charSprites,
 						PlayerState.Idle,
 						true,
 						"ninja"));
 
                 // Set the room type
-                roomType = RoomType.Boss;
+                currentRoomType = RoomType.Boss;
 			}
 			// Starting room, does not spawn anything
 			else if (data == 'S')
 			{
 				// Set the room type
-				roomType = RoomType.Starting;
+				currentRoomType = RoomType.Starting;
 			}
 		}
 
@@ -123,19 +161,23 @@ namespace dash_game
 		/// </summary>
 		public void Update(Texture2D speedArrow)
 		{
+			// Get keyboard state
+			kbState = Keyboard.GetState();
+
+			// Update the player
+			player.Update(kbState, kbPrevState);
+
 			// Switch for the room type
-			switch (roomType)
+			switch (currentRoomType)
 			{
 				case RoomType.Starting:
+                    cleared = true;
 					break;
 
 				case RoomType.Battle:
                     // Updates the enemies
                     foreach (Enemy enemy in enemies)
                     {
-                        // Update the player
-                        player.Update(enemy, kbState, kbPrevState);
-
                         // Checks for collision
                         if (enemy.Rect.Intersects(player.Rect))
                         {
@@ -161,7 +203,7 @@ namespace dash_game
                     break;
 
 				case RoomType.Item:
-					item = new Items(new Rectangle(rand.Next(100, 500), rand.Next(100, 500), 25, 25), "Speed Boost", false, speedArrow);
+                    item = new Items(new Rectangle(rand.Next(100, 500), rand.Next(100, 500), 25, 25), "Speed Boost", false, speedArrow);
 					item.CheckCollision(player);
 					break;
 
@@ -169,9 +211,6 @@ namespace dash_game
                     // Updates the enemies
                     foreach (Enemy enemy in enemies)
                     {
-                        // Update the player
-                        player.Update(enemy, kbState, kbPrevState);
-
                         // Checks for collision
                         if (enemy.Rect.Intersects(player.Rect))
                         {
@@ -188,8 +227,16 @@ namespace dash_game
                             player.Health += 50;
                         }
                     }
+
+					// Set cleared to true if everything has been defeated
+					if (enemies.Count == 0)
+					{
+						cleared = true;
+					}
                     break;
 			}
+			// Set the previous state to the current
+			kbPrevState = kbState;
 		}
 
 		/// <summary>
@@ -197,8 +244,11 @@ namespace dash_game
 		/// </summary>
 		public void Draw()
 		{
+			// Player will always be drawn
+			player.Draw(spriteBatch);
+
             // Switch for the room type
-            switch (roomType)
+            switch (currentRoomType)
             {
                 case RoomType.Battle:
 					// Draw each of the enemies
@@ -209,6 +259,8 @@ namespace dash_game
                     break;
 
                 case RoomType.Item:
+					// Draw the item at the start of the room
+					item.Draw(spriteBatch);
                     break;
 
                 case RoomType.Boss:
@@ -226,24 +278,24 @@ namespace dash_game
 		/// </summary>
 		public void DrawDoors()
 		{
-			if (north != null)
+			if (north != null && cleared)
 			{
-
+				spriteBatch.Draw(doorTexture, northDoor, Color.White);
 			}
 
-			if (south != null)
+			if (south != null && cleared)
 			{
-
+				spriteBatch.Draw(doorTexture, southDoor, Color.White);
 			}
 
-			if (east != null)
+			if (east != null && cleared)
 			{
-
+				spriteBatch.Draw(doorTexture, eastDoor, Color.White);
 			}
 
-			if (west != null)
+			if (west != null && cleared)
 			{
-
+				spriteBatch.Draw(doorTexture, westDoor, Color.White);
 			}
 		}
 
@@ -253,24 +305,32 @@ namespace dash_game
 		/// <returns>Returns the room that the player has entered</returns>
 		public Room DoorLogic()
 		{
-			if (north != null && northDoor.Intersects(player.Rect))
+			if (north != null && northDoor.Intersects(player.Rect) && cleared)
 			{
+				player.CharacterPosition = new Vector2((1223 / 2), 643);
+				player.Rect = new Rectangle((1223 / 2), 623, 25, 25);
 				return north;
 			}
 
-			if (south != null && southDoor.Intersects(player.Rect))
+			if (south != null && southDoor.Intersects(player.Rect) && cleared)
 			{
-				return south;
+                player.CharacterPosition = new Vector2((1223 / 2), 118);
+                player.Rect = new Rectangle((1223 / 2), 138, 25, 25);
+                return south;
 			}
 
-			if (east != null && eastDoor.Intersects(player.Rect))
+			if (east != null && eastDoor.Intersects(player.Rect) && cleared)
 			{
-				return east;
+                player.CharacterPosition = new Vector2(52, 339);
+                player.Rect = new Rectangle(52, 339, 25, 25);
+                return east;
 			}
 
-			if (south != null && southDoor.Intersects(player.Rect))
+			if (west != null && westDoor.Intersects(player.Rect) && cleared)
 			{
-				return south;
+                player.CharacterPosition = new Vector2(1208, 339);
+                player.Rect = new Rectangle(1208, 339, 25, 25);
+                return south;
 			}
 
 			return null;

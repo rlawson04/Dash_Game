@@ -38,6 +38,8 @@ namespace dash_game
         // Creation of different screens
         TitleScreen titleScreen = new TitleScreen();
         Horde horde;
+        // Creating a level, at some point this will be able to take in text but currently just runs a trial
+        Level currentLevel;
 
         // Keyboard and mouse states
         KeyboardState kbState;
@@ -60,6 +62,9 @@ namespace dash_game
         private Items item;
         private Random random;
         public GameState currentState = GameState.Title;
+
+        // Texture 2d for the doorsprites
+        private Texture2D doorTexture;
 
         public Game1()
         {
@@ -93,14 +98,18 @@ namespace dash_game
             Texture2D spriteSheet = Content.Load<Texture2D>("SpriteBatchForDash");
             Texture2D speedArrow = Content.Load<Texture2D>("Speed Arrow");
             player = new Player(100, new Vector2(300,300), new Rectangle(300, 300, 25, 25), spriteSheet, PlayerState.Idle);
-            
+
+            // Texture for the doors in adventure
+            Texture2D doorTexture = Content.Load<Texture2D>("SpriteBatchForDash");
 
             // Item to test
             random = new Random();
             item = new Items(new Rectangle(random.Next(100, 500), random.Next(100, 500), 25, 25), "Speed Boost", false, speedArrow);
             
-
+            // Creation of both horde and level objects, done here so they can utilize sprites
             horde = new Horde(spriteSheet, player, _spriteBatch);
+            currentLevel = new Level(player, "TrialLevel", spriteSheet, speedArrow, _spriteBatch, doorTexture);
+            currentLevel.CreateLevel();
         }
 
         protected override void Update(GameTime gameTime)
@@ -126,7 +135,7 @@ namespace dash_game
                     // Update the players movement
                     if (!paused)
                     {
-                        player.Update(enemy, kbState, kbPrevState);
+                        player.Update(kbState, kbPrevState);
                         horde.Update();
 
                         if (player.Health <= 0)
@@ -139,8 +148,6 @@ namespace dash_game
                     if (kbState.IsKeyUp(Keys.P) && kbPrevState.IsKeyDown(Keys.P) && !paused)
                     {
                         paused = true;
-                        // Pause state is not yet emplemented
-                        // currentState = GameState.Pause;
                     }
                     else if (kbState.IsKeyUp(Keys.P) && kbPrevState.IsKeyDown(Keys.P) && paused)
                     {
@@ -150,13 +157,14 @@ namespace dash_game
                     break;
 
                 case GameState.Adventure:
-                    // Currently will just run the GameOver logic as this feature will not be implemented in sprint 2
-                    if (kbState.IsKeyUp(Keys.Space) && kbPrevState.IsKeyDown(Keys.Space))
+                    // Run updates if the game is not paused
+                    if (!paused)
                     {
-                        currentState = GameState.Title;
+                        currentLevel.Update();
+                        currentLevel.MoveRoom();
                     }
 
-                    // Set to Pause State
+                    // Set to pause state
                     if (kbState.IsKeyUp(Keys.P) && kbPrevState.IsKeyDown(Keys.P) && !paused)
                     {
                         paused = true;
@@ -237,12 +245,15 @@ namespace dash_game
 
                 // Draws enemies, items, and the player for the classic mode
                 case GameState.Adventure:
-                    // Not implemented yet, draws placeholder text
-                    _spriteBatch.DrawString(gameFont, "Game mode has not been implemented yet",
-                        new Vector2(640, 400) - (gameFont.MeasureString("Game mode has not been implemented yet") / 2), Color.Black);
+                    currentLevel.Draw();
 
-                    _spriteBatch.DrawString(gameFont, "Press space to return to title screen",
-                        new Vector2(640, 500) - (gameFont.MeasureString("Press space to return to title screen") / 2), Color.Black);
+                    // Draws certain elements based on the game being paused
+                    if (paused)
+                    {
+                        _spriteBatch.Draw(background, new Rectangle(0, 0, background.Width, background.Height), shader);
+                        _spriteBatch.DrawString(titleFont, "Paused", new Vector2(640, 400) - (titleFont.MeasureString("Paused") / 2), Color.Black);
+                        _spriteBatch.DrawString(gameFont, "Press P to un-pause", new Vector2(640, 500) - (gameFont.MeasureString("Press P to un-pause") / 2), Color.Black);
+                    }
                     break;
 
                 // Draws everything for the pause menu

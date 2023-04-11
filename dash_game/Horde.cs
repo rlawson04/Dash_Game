@@ -99,7 +99,7 @@ namespace dash_game
 			foreach (Enemy enemy in enemies)
 			{
 				// Update the player
-				player.Update(enemy, kbState, kbPrevState);
+				player.Update(kbState, kbPrevState);
 
 				// Checks for collision
 				if (enemy.Rect.Intersects(player.Rect))
