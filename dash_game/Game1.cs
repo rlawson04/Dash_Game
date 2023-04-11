@@ -97,7 +97,7 @@ namespace dash_game
             Vector2 playerLoc = new Vector2(300f, 300f);
             Texture2D spriteSheet = Content.Load<Texture2D>("SpriteBatchForDash");
             Texture2D speedArrow = Content.Load<Texture2D>("Speed Arrow");
-            player = new Player(100, new Vector2(300,300), new Rectangle(300, 300, 25, 25), spriteSheet, PlayerState.Idle);
+            player = new Player(100, new Vector2(300,300), new Rectangle(300, 300, 25, 25), spriteSheet, PlayerState.IdleRight);
 
             // Texture for the doors in adventure
             Texture2D doorTexture = Content.Load<Texture2D>("SpriteBatchForDash");
@@ -120,6 +120,39 @@ namespace dash_game
             // TODO: Add your update logic here
             kbState = Keyboard.GetState();
              
+            switch(player.State)
+            {
+                // If he is facing left, he can transition to walking left, facing right, and crouching left
+                case PlayerState.IdleLeft:
+                    if (kbState.IsKeyDown(Keys.A))
+                    {
+                        player.State = PlayerState.RunningLeft;
+
+                    }
+                    if (kbState.IsKeyDown(Keys.D) && kbPrevState.IsKeyUp(Keys.D))
+                    {
+                        player.State = PlayerState.IdleRight;
+                    }
+                    
+                    break;
+
+                // If he is facing right, he can transition to walking right,
+                case PlayerState.IdleRight:
+                    if (kbState.IsKeyDown(Keys.D))
+                    {
+                        player.State = PlayerState.RunningRight;
+
+                    }
+                    if (kbState.IsKeyDown(Keys.A) && kbPrevState.IsKeyUp(Keys.A))
+                    {
+                        player.State = PlayerState.IdleLeft;
+                    }
+
+                    break;
+
+
+            }
+
             switch (currentState)
             {
                 case GameState.Title:
@@ -176,6 +209,11 @@ namespace dash_game
                     break;
 
                 case GameState.Stats:
+                    // Checks if the user has pressed the spacebar and sends them back to the title screen
+                    if (kbState.IsKeyUp(Keys.Space) && kbPrevState.IsKeyDown(Keys.Space))
+                    {
+                        currentState = GameState.Title;
+                    }
                     break;
 
                 case GameState.GameOver:
@@ -219,7 +257,7 @@ namespace dash_game
                 // Draws enemies, items, and the player for horde mode
                 case GameState.Horde:
                     // Drawing the player and enemies
-                    player.DrawWalking(SpriteEffects.FlipHorizontally,_spriteBatch);
+                    player.Draw(_spriteBatch);
 
                     if (item.PickedUp == false) 
                     {
@@ -246,7 +284,7 @@ namespace dash_game
                 // Draws enemies, items, and the player for the classic mode
                 case GameState.Adventure:
                     currentLevel.Draw();
-
+                    player.Draw(_spriteBatch);
                     // Draws certain elements based on the game being paused
                     if (paused)
                     {

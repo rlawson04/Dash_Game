@@ -32,6 +32,7 @@ namespace dash_game
         protected double timeCounter;
         protected double fps;
         protected double timePerFrame;
+        protected int walkFrameCount = 3;
 
         /// <summary>
 		/// Gets the current health of the character

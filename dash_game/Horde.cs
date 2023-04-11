@@ -74,7 +74,7 @@ namespace dash_game
 					new Vector2(xPos, yPos),
 					new Rectangle(xPos, yPos, 25, 25),
 					charSprites,
-					PlayerState.Idle,
+					PlayerState.IdleRight,
 					false,
 					"ninja"));
 			}

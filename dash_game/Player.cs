@@ -18,7 +18,10 @@ namespace dash_game
         RunningUp,
         RunningDown,
         Dashing,
-        Idle, // Handles the idle animation 
+        IdleLeft,
+        IdleRight,
+        IdleUp,
+        IdleDown,// Handles the idle animation 
     }
 
     public class Player : Character
@@ -110,8 +113,71 @@ namespace dash_game
 		{
             Movement(kbState);
             Dash(kbState, kbPrevState);
+        }
+        
+        /// <summary>
+        /// Handles the movement in the 4 directions
+        /// </summary>
+		public void Movement(KeyboardState kbState)
+		{
 
+            switch (state)
+            {
 
+                // While walking he moves 3 pixels per frame and then if the key is no longer being pressed,
+                // he transitions back to standing 
+                case PlayerState.RunningLeft:
+                    if (kbState.IsKeyDown(Keys.A) && characterPosition.X > 42)
+                    {
+                        characterPosition.X -= movementSpeed;
+                        rect.X -= movementSpeed;
+                    }
+                    else
+                    {
+                        state = PlayerState.IdleLeft;
+                    }
+                    break;
+
+                // While walking he moves 3 pixels per frame and then if the key is no longer being pressed,
+                // he transitions back to standing
+                case PlayerState.RunningRight:
+                    if (kbState.IsKeyDown(Keys.D) && (characterPosition.X + rect.Width) < 1160)
+                    {
+                        characterPosition.X += movementSpeed;
+                        rect.X += movementSpeed;
+                    }
+                    else
+                    {
+                        state = PlayerState.IdleRight;
+                    }
+                    break;
+            }
+
+            // Moves the player position and rectangle based on each of the four inputs
+            if (kbState.IsKeyDown(Keys.W) == true && characterPosition.Y > 98)
+            {
+                characterPosition.Y -= movementSpeed;
+                rect.Y -= movementSpeed;
+            }
+            /*
+            if (kbState.IsKeyDown(Keys.A) == true && characterPosition.X > 32)
+            {
+				characterPosition.X -= movementSpeed;	
+                rect.X -= movementSpeed;
+            }
+            */
+            if (kbState.IsKeyDown(Keys.S) == true && (characterPosition.Y + rect.Height) < 605)
+            {
+				characterPosition.Y += movementSpeed;
+                rect.Y += movementSpeed;
+            }
+            /*
+            if (kbState.IsKeyDown(Keys.D) == true && (characterPosition.X + rect.Width) < 1216)
+            {
+				characterPosition.X += movementSpeed;
+                rect.X += movementSpeed;
+            }
+            */
         }
 
         /// <summary>
@@ -119,40 +185,25 @@ namespace dash_game
         /// </summary>
         /// <param name="spriteBatch"> takes the spritebatch from the game's draw method </param>
 		public void Draw(SpriteBatch spriteBatch)
-		{
-			spriteBatch.Draw(spriteSheet, characterPosition, 
-                new Rectangle(0, 100, 25, 25), 
-                Color.White, 0, Vector2.Zero, 4f, 
-                SpriteEffects.None, 0);
-		}
+        {
+            switch (State)
+            {
+                case PlayerState.RunningLeft:
+                    DrawWalking(SpriteEffects.FlipHorizontally, spriteBatch);
+                    break;
 
-        /// <summary>
-        /// Handles the movement in the 4 directions
-        /// </summary>
-		public void Movement(KeyboardState kbState)
-		{
-            // Moves the player position and rectangle based on each of the four inputs
-            if (kbState.IsKeyDown(Keys.W) == true && characterPosition.Y > 98)
-            {
-                characterPosition.Y -= movementSpeed;
-                rect.Y -= movementSpeed;
+                case PlayerState.RunningRight:
+                    DrawWalking(SpriteEffects.None, spriteBatch);
+                    break;
+
+                case PlayerState.IdleLeft:
+                    DrawStanding(SpriteEffects.FlipHorizontally, spriteBatch);
+                    break;
+
+                case PlayerState.IdleRight:
+                    DrawStanding(SpriteEffects.None, spriteBatch);
+                    break;
             }
-            if (kbState.IsKeyDown(Keys.A) == true && characterPosition.X > 32)
-            {
-				characterPosition.X -= movementSpeed;	
-                this.rect.X -= movementSpeed;
-            }
-            if (kbState.IsKeyDown(Keys.S) == true && (characterPosition.Y + rect.Height) < 605)
-            {
-				characterPosition.Y += movementSpeed;
-                rect.Y += movementSpeed;
-            }
-            if (kbState.IsKeyDown(Keys.D) == true && (characterPosition.X + rect.Width) < 1216)
-            {
-				characterPosition.X += movementSpeed;
-                rect.X += movementSpeed;
-            }
-            
         }
 
         public void DrawWalking(SpriteEffects flipSprite, SpriteBatch spriteBatch)
@@ -164,6 +215,14 @@ namespace dash_game
                     ), 
                 Color.White, 0, 
                 Vector2.Zero, 4.0f, 
+                flipSprite, 0);
+        }
+
+        public void DrawStanding(SpriteEffects flipSprite, SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(spriteSheet, characterPosition,
+                new Rectangle(0, 100, 25, 25),
+                Color.White, 0, Vector2.Zero, 4f,
                 flipSprite, 0);
         }
 
@@ -202,6 +261,34 @@ namespace dash_game
                 rect.X += movementSpeed * 15;
             }
         }
+
+        /*
+        /// <summary>
+        /// Updates Player's animation as necessary
+        /// </summary>
+        /// <param name="gameTime">Time information</param>
+        public void UpdateAnimation(GameTime gameTime)
+        {
+            // Handle animation timing
+            // - Add to the time counter
+            // - Check if we have enough "time" to advance the frame
+
+            // How much time has passed?  
+            timeCounter += gameTime.ElapsedGameTime.TotalSeconds;
+
+            // If enough time has passed:
+            if (timeCounter >= timePerFrame)
+            {
+                frame += 1;                     // Adjust the frame to the next image
+
+                if (frame > walkFrameCount)     // Check the bounds - have we reached the end of walk cycle?
+                    frame = 1;                  // Back to 1 (since 0 is the "standing" frame)
+
+                timeCounter -= timePerFrame;    // Remove the time we "used" - don't reset to 0
+                                                // This keeps the time passed 
+            }
+        }
+        */
     }
 }
 
