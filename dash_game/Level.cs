@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Input;
  * Purpose: Defines the logic for the maps
  * Modifications: Added the logic for reading in a file, currently will just load the trial that I have made because I have not created a gui for the adventure menu
  * All logic for creating a level has been created and tested.
+ * Finished adding comments that follow coding standards
  */
 
 namespace dash_game
@@ -15,14 +16,21 @@ namespace dash_game
 	public class Level
 	{
 		// Fields
+		// Necessary fields for the rooms
 		private Room current;
 		private StreamReader reader;
 		private Room[,] rooms;
+
+		// Stores file names that are passed into create level to turn a text file into a level
 		private string fileName;
+
+		// An instance of the player that will be passed from Game 1
 		private Player player;
-		private Texture2D charSprites;
+
+		// Fields that deal with sprites and drawing of assets
+        private SpriteBatch spriteBatch;
+        private Texture2D charSprites;
 		private Texture2D itemSprites;
-		private SpriteBatch spriteBatch;
 		private Texture2D doorTexture;
 		private Texture2D hitTexture;
 
@@ -44,7 +52,7 @@ namespace dash_game
 		public void CreateLevel()
 		{
 			// Read the file that is taken in, currently will only open one file.
-			reader = new StreamReader("../../../Content/TrialLevel.txt");
+			reader = new StreamReader("../../../Content/Levels/TrialLevel.txt");
 
 			// Create the array based on the first line of the file
 			string[] dimensions = reader.ReadLine().Split(",");
@@ -63,12 +71,12 @@ namespace dash_game
 					}
 					else if (data[j] == 'S')
 					{
-						rooms[i, j] = new Room(data[j], player, charSprites, spriteBatch, doorTexture, hitTexture);
+						rooms[i, j] = new Room(data[j], player, charSprites, spriteBatch, doorTexture, hitTexture, itemSprites);
 						current = rooms[i, j];
 					}
 					else
 					{
-						rooms[i, j] = new Room(data[j], player, charSprites, spriteBatch, doorTexture, hitTexture);
+						rooms[i, j] = new Room(data[j], player, charSprites, spriteBatch, doorTexture, hitTexture, itemSprites);
 					}
 				}
 			}
@@ -156,7 +164,7 @@ namespace dash_game
 		/// </summary>
 		public void Update()
 		{
-			current.Update(itemSprites);
+			current.Update();
 		}
 
 		/// <summary>

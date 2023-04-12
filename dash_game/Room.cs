@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Input;
 /* Name: Room
  * Purpose: Defines the logic for each room in the level
  * Modifications: Defined all of the logic for each type of room in the adventure mode, added properties for each room. Ensured that the player would be updated
+ * Added comments that follow coding standards.
  */
 
 namespace dash_game
@@ -60,11 +61,17 @@ namespace dash_game
 		KeyboardState kbPrevState;
 
         // Properties
+		/// <summary>
+		/// Gets the current room type, used by level to define the starting room
+		/// </summary>
         public RoomType CurrentRoomType
 		{
 			get { return currentRoomType; }
 		}
 
+		/// <summary>
+		/// All directions include gets and sets so level creation works properly
+		/// </summary>
 		public Room North
 		{
 			get { return north; }
@@ -89,13 +96,16 @@ namespace dash_game
             set { west = value; }
         }
 
+		/// <summary>
+		/// Allows the cleared value to be set in order to define rooms such as starting and item to have a default state of true
+		/// </summary>
 		public bool Cleared
 		{
 			set { cleared = value; }
 		}
 
         // Constructor
-        public Room(char data, Player player, Texture2D charSprites, SpriteBatch spriteBatch, Texture2D doorTexture, Texture2D hitTexture)
+        public Room(char data, Player player, Texture2D charSprites, SpriteBatch spriteBatch, Texture2D doorTexture, Texture2D hitTexture, Texture2D itemSprites)
 		{
 			// Set the player for the room
 			this.player = player;
@@ -130,10 +140,11 @@ namespace dash_game
 			// I stands for item, create an item room
 			else if (data == 'I')
 			{
-				// Create an item object in the middle of the room
+                // Create an item object in the middle of the room
+                item = new Items(new Rectangle(rand.Next(100, 500), rand.Next(100, 500), 25, 25), "Speed Boost", false, itemSprites);
 
-				// Set the room type
-				currentRoomType = RoomType.Item;
+                // Set the room type
+                currentRoomType = RoomType.Item;
 			}
 			// Boss rooms
 			else if (data == 'B')
@@ -163,7 +174,7 @@ namespace dash_game
 		/// <summary>
 		/// Updates the room according to the room type
 		/// </summary>
-		public void Update(Texture2D speedArrow)
+		public void Update()
 		{
 			// Get keyboard state
 			kbState = Keyboard.GetState();
@@ -212,7 +223,6 @@ namespace dash_game
                     break;
 
 				case RoomType.Item:
-                    item = new Items(new Rectangle(rand.Next(100, 500), rand.Next(100, 500), 25, 25), "Speed Boost", false, speedArrow);
 					item.CheckCollision(player);
 					break;
 
