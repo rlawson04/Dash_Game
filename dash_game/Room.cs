@@ -357,7 +357,7 @@ namespace dash_game
 			{
                 player.CharacterPosition = new Vector2(1208, 339);
                 player.Rect = new Rectangle(1208, 339, 25, 25);
-                return south;
+                return west;
 			}
 
 			return null;
