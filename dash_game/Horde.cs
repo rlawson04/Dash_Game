@@ -43,6 +43,7 @@ namespace dash_game
 		public int Score
 		{
 			get { return score; }
+			set { score = value; }
 		}
 
 		public int Wave
@@ -124,7 +125,7 @@ namespace dash_game
 				}
 
 				//checks for collision with hitbox of attack
-				if (enemy.Hitbox.Intersects(player.Rect))
+				if (enemy.Hitbox.Intersects(player.Rect) && enemy.Atk == true)
                 {
 					player.Health -= enemy.Damage;
                 }
@@ -151,7 +152,24 @@ namespace dash_game
 			foreach (Enemy enemy in enemies)
 			{
 				enemy.Draw(_spriteBatch);
-				enemy.MeleeAttack(_spriteBatch, hitTexture);
+
+				//update the enemy attack timer
+				enemy.AtkTimer = enemy.AtkTimer + 1;
+
+				//if the enemies attack timer is greater than 120, set their atk bool to true, thereby triggerin their melee attack
+				if  (enemy.AtkTimer > 120)
+				{
+					enemy.Atk = true;
+					enemy.MeleeAttack(_spriteBatch, hitTexture);
+					
+					//if the attack timer is greater than 130, end the attack by setting it to 0 and resetting the attack bool to false
+					//this results in a 10 frame attack
+					if (enemy.AtkTimer > 130)
+					{
+						enemy.AtkTimer = 0;
+						enemy.Atk = false;
+					}
+				}
 			}
 		}
 	}

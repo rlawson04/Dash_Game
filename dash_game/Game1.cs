@@ -118,7 +118,7 @@ namespace dash_game
 
             // Creation of both horde and level objects, done here so they can utilize sprites
             horde = new Horde(spriteSheet, player, _spriteBatch, hitTexture);
-            currentLevel = new Level(player, "TrialLevel", spriteSheet, speedArrow, _spriteBatch, doorTexture);
+            currentLevel = new Level(player, "TrialLevel", spriteSheet, speedArrow, _spriteBatch, doorTexture, hitTexture);
             currentLevel.CreateLevel();
 
         }
@@ -206,11 +206,13 @@ namespace dash_game
                     // Checks if the user has pressed the spacebar and sends them back to the title screen
                     if (kbState.IsKeyUp(Keys.Space) && kbPrevState.IsKeyDown(Keys.Space))
                     {
+                        //This is basically resetting all the stats once a gameover is reached, so that you can immediately go back into horde mode.
                         currentState = GameState.Title;
                         horde.Wave = 0;
                         horde.Enemies.Clear();
                         player.Health = 100;
                         horde.NumEnemies = 3;
+                        horde.Score = 0;
                     }
                     break;
             }

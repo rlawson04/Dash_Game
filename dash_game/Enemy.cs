@@ -27,6 +27,8 @@ namespace dash_game
 		private Rectangle hitbox;
 		private int damage;
 		private Vector2 adjustedPos;
+		private int atkTimer = 0;
+		private bool atk = false;
 
 		// -------------------------------
 		// Properties
@@ -66,6 +68,24 @@ namespace dash_game
 		{
 			get { return damage; }
 			set { damage = value; }
+		}
+
+        /// <summary>
+        /// Gets or sets the int that represents the timer, deciding when enemies attack and for how long
+        /// </summary>
+        public int AtkTimer
+		{
+			get { return atkTimer; }
+			set { atkTimer = value; }
+		}
+
+        /// <summary>
+        /// Gets or sets whether or net the atk is active, to be used to prevent lingering hitboxes from hurting the player
+        /// </summary>
+        public bool Atk
+		{
+			get { return atk; }
+			set { atk = value; }
 		}
 
 
@@ -109,12 +129,14 @@ namespace dash_game
 		/// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
 		{
+			//50/50 chance of facing left or right
 			if (tempRNG == 0)
             {
 				spriteBatch.Draw(spriteSheet, characterPosition, new Rectangle(0, 100, 25, 25), Color.Red, 0, Vector2.Zero, 4f, SpriteEffects.None, 0);
 			}
 			else if (tempRNG == 1)
             {
+				//if facing left, agjust the position used to draw it to account for horizontal flip
 				adjustedPos = new Vector2(characterPosition.X + 25, characterPosition.Y);
 				spriteBatch.Draw(spriteSheet, adjustedPos, new Rectangle(0, 100, 25, 25), Color.Red, 0, Vector2.Zero, 4f, SpriteEffects.FlipHorizontally, 0);
 			}
@@ -127,6 +149,8 @@ namespace dash_game
 			//if tempRNG equals zero they are facing right
 			if (tempRNG == 0)
             {
+				//create a hitbox for the attack, in front of the enemy it is tied to, then draw a rectangle representing the hitbox.
+				//This rectangle to be replaced with sword sprite upin suitablt sprite being found
 				hitbox = new Rectangle((int)characterPosition.X + 90, (int)characterPosition.Y + 25, 30, 65);
 				_spriteBatch.Draw(hitTexture, hitbox, Color.Red);
 			}
@@ -134,8 +158,11 @@ namespace dash_game
 			//these enemieas are facing left
 			else if (tempRNG == 1)
             {
-                hitbox = new Rectangle((int)adjustedPos.X - 50, (int)adjustedPos.Y + 25, 30, 65);
-				_spriteBatch.Draw(hitTexture, new Rectangle (hitbox.X + 30, hitbox.Y, 30, 65), Color.Red);
+				//create a hitbox for the attack, the rectangle here has to be adjusted slighly to account for the horizontal flip of an
+				//enemy not flipping at the center of the sprite but rather from the origin. Then draw the rectangle representing the hitbox, again
+				//with adjusted coordinates due to the flip.
+                hitbox = new Rectangle((int)adjustedPos.X - 50, (int)adjustedPos.Y + 20, 30, 65);
+				_spriteBatch.Draw(hitTexture, new Rectangle (hitbox.X + 30, hitbox.Y + 5, 30, 65), Color.Red);
 			}
 		}
         

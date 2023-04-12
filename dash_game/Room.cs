@@ -26,6 +26,7 @@ namespace dash_game
 		// Data for enemies
 		private List<Enemy> enemies = new List<Enemy>();
 		private int numEnemies;
+		private Texture2D hitTexture;
 
 		// Tracking rooms
 		private Room north;
@@ -94,12 +95,13 @@ namespace dash_game
 		}
 
         // Constructor
-        public Room(char data, Player player, Texture2D charSprites, SpriteBatch spriteBatch, Texture2D doorTexture)
+        public Room(char data, Player player, Texture2D charSprites, SpriteBatch spriteBatch, Texture2D doorTexture, Texture2D hitTexture)
 		{
 			// Set the player for the room
 			this.player = player;
 			this.spriteBatch = spriteBatch;
 			this.doorTexture = doorTexture;
+			this.hitTexture = hitTexture;
 
 			// If data is a number, spawn the enemies
 			if (int.TryParse(data.ToString(), out numEnemies))
@@ -112,9 +114,9 @@ namespace dash_game
                     int yPos = rand.Next(98, (605 - 25));
 
                     // Add enemies for num enemies
-                    enemies.Add(new Enemy(5,
+                    enemies.Add(new Enemy(2,
                         new Vector2(xPos, yPos),
-                        new Rectangle(xPos, yPos, 25, 25),
+                        new Rectangle(xPos, yPos, 75, 75),
                         charSprites,
                         PlayerState.IdleRight,
                         false,
@@ -185,6 +187,12 @@ namespace dash_game
                         {
                             enemy.Health -= player.Damage;
                         }
+
+                        //checks for collision with hitbox of attack
+                        if (enemy.Hitbox.Intersects(player.Rect) && enemy.Atk == true)
+                        {
+                            player.Health -= enemy.Damage;
+                        }
                     }
 
                     // If an enemies health is zero remove it
@@ -193,7 +201,6 @@ namespace dash_game
                         if (enemies[i].Health <= 0)
                         {
                             enemies.Remove(enemies[i]);
-                            player.Health += 50;
                         }
                     }
 
@@ -257,7 +264,25 @@ namespace dash_game
 					foreach (Enemy enemy in enemies)
 					{
 						enemy.Draw(spriteBatch);
-					}
+
+                        //update the enemy attack timer
+                        enemy.AtkTimer = enemy.AtkTimer + 1;
+
+                        //if the enemies attack timer is greater than 120, set their atk bool to true, thereby triggering their melee attack
+                        if (enemy.AtkTimer > 120)
+                        {
+                            enemy.Atk = true;
+                            enemy.MeleeAttack(spriteBatch, hitTexture);
+
+                            //if the attack timer is greater than 130, end the attack by setting it to 0 and resetting the attack bool to false
+                            //this results in a 10 frame attack
+                            if (enemy.AtkTimer > 130)
+                            {
+                                enemy.AtkTimer = 0;
+                                enemy.Atk = false;
+                            }
+                        }
+                    }
                     break;
 
                 case RoomType.Item:

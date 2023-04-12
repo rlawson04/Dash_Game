@@ -24,15 +24,17 @@ namespace dash_game
 		private Texture2D itemSprites;
 		private SpriteBatch spriteBatch;
 		private Texture2D doorTexture;
+		private Texture2D hitTexture;
 
 		// Constructor
-		public Level(Player player, string fileName, Texture2D charSprites, Texture2D itemSprites, SpriteBatch spriteBatch, Texture2D doorTexture)
+		public Level(Player player, string fileName, Texture2D charSprites, Texture2D itemSprites, SpriteBatch spriteBatch, Texture2D doorTexture, Texture2D hitTexture)
 		{
 			this.player = player;
 			this.fileName = fileName;
 			this.charSprites = charSprites;
 			this.spriteBatch = spriteBatch;
 			this.doorTexture = doorTexture;
+			this.hitTexture = hitTexture;
 		}
 
 		// Methods
@@ -61,12 +63,12 @@ namespace dash_game
 					}
 					else if (data[j] == 'S')
 					{
-						rooms[i, j] = new Room(data[j], player, charSprites, spriteBatch, doorTexture);
+						rooms[i, j] = new Room(data[j], player, charSprites, spriteBatch, doorTexture, hitTexture);
 						current = rooms[i, j];
 					}
 					else
 					{
-						rooms[i, j] = new Room(data[j], player, charSprites, spriteBatch, doorTexture);
+						rooms[i, j] = new Room(data[j], player, charSprites, spriteBatch, doorTexture, hitTexture);
 					}
 				}
 			}
