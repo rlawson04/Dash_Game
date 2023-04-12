@@ -254,10 +254,13 @@ namespace dash_game
                     
                     horde.Draw();
 
+                    // Draw the player health in the top right
+                    _spriteBatch.DrawString(gameFont, $"Health: {player.Health}", new Vector2(0, 0), Color.Black);
+
                     // Draw the score up in the top right
                     _spriteBatch.DrawString(gameFont, "Score " + horde.Score.ToString(), new Vector2(1050, 0), Color.Black);
-                    _spriteBatch.DrawString(gameFont, "Wave " + horde.Wave.ToString(), new Vector2(0, 0), Color.Black);
-                    _spriteBatch.DrawString(gameFont, "Press P to pause", new Vector2(0, 25), Color.Black);
+                    _spriteBatch.DrawString(gameFont, "Wave " + horde.Wave.ToString(), new Vector2(300, 0), Color.Black);
+                    _spriteBatch.DrawString(gameFont, "Press P to pause", new Vector2(500, 0), Color.Black);
 
                     // Draws certain elements based on the game being paused
                     if (paused)
@@ -272,6 +275,10 @@ namespace dash_game
                 case GameState.Adventure:
                     currentLevel.Draw();
                     player.Draw(_spriteBatch);
+
+                    // Draw the player health in the top right
+                    _spriteBatch.DrawString(gameFont, $"Health: {player.Health}", new Vector2(0, 0), Color.Black);
+
                     // Draws certain elements based on the game being paused
                     if (paused)
                     {
