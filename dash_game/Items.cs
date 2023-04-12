@@ -108,9 +108,21 @@ namespace dash_game
                         player.MovementSpeed = 5;
                     }
                     break;
+
+                case "Health Pack":
+                    if (pickedUp)
+                    {
+                        player.Health += 25;
+                    }
+                    break;
+
+                case "Attack Boost":
+                    if (pickedUp)
+                    {
+                        player.Damage += 5;
+                    }
+                    break;
             }
-               
-           
         }
     }
 }

@@ -62,6 +62,7 @@ namespace dash_game
         public int Damage
         {
             get { return damage; }
+            set { damage = value; }
         }
 
         /// <summary>
@@ -116,13 +117,14 @@ namespace dash_game
         }
         
         /// <summary>
-        /// Handles the movement in the 4 directions
+        /// Handles omni-directional movement
         /// </summary>
 		public void Movement(KeyboardState kbState, KeyboardState kbPrevState)
 		{
-            // Depending on the inputs, the state of the player changes 
+            // Depending on the inputs, the state of the player changes and the player may move around
             switch (State)
             {
+                // Facing left, the player can face any other direction or run left
                 case PlayerState.IdleLeft:
                     if (kbState.IsKeyDown(Keys.A))
                     {
@@ -142,6 +144,7 @@ namespace dash_game
                     }
                     break;
 
+                // Facing right, the player can face any other direction or run right
                 case PlayerState.IdleRight:
                     if (kbState.IsKeyDown(Keys.D))
                     {
@@ -161,6 +164,7 @@ namespace dash_game
                     }
                     break;
 
+                // Facing up, the player can face any other direction or run up
                 case PlayerState.IdleUp:
                     if (kbState.IsKeyDown(Keys.W))
                     {
@@ -180,6 +184,7 @@ namespace dash_game
                     }
                     break;
 
+                // Facing down, the player can face any other direction or run down
                 case PlayerState.IdleDown:
                     if (kbState.IsKeyDown(Keys.S))
                     {
@@ -199,6 +204,7 @@ namespace dash_game
                     }
                     break;
 
+                // Running left, the player can face left or run up and down diagonally
                 case PlayerState.RunningLeft:
                     if (kbState.IsKeyDown(Keys.A) && characterPosition.X > 32)
                     {
@@ -223,7 +229,7 @@ namespace dash_game
 
                     break;
 
-                
+                // Running right, the player can face right or run up and down diagonally
                 case PlayerState.RunningRight:
                     if (kbState.IsKeyDown(Keys.D) && (characterPosition.X + rect.Width) < 1216)
                     {
@@ -248,6 +254,7 @@ namespace dash_game
 
                     break;
 
+                // Running up, the player can face up or run left and right diagonally
                 case PlayerState.RunningUp:
                     if (kbState.IsKeyDown(Keys.W) == true && characterPosition.Y > 98)
                     {
@@ -273,7 +280,7 @@ namespace dash_game
 
                     break;
 
-
+                // Running down, the player can face down or run left and right diagonally
                 case PlayerState.RunningDown:
                    
                     if (kbState.IsKeyDown(Keys.S) == true && (characterPosition.Y + rect.Height) < 605)
@@ -326,7 +333,7 @@ namespace dash_game
                     break;
 
                 case PlayerState.RunningDown:
-                    DrawWalking(SpriteEffects.FlipVertically, spriteBatch);
+                    DrawWalking(SpriteEffects.None, spriteBatch);
                     break;
 
                 case PlayerState.IdleLeft:
@@ -342,7 +349,7 @@ namespace dash_game
                     break;
 
                 case PlayerState.IdleDown:
-                    DrawStanding(SpriteEffects.FlipVertically, spriteBatch);
+                    DrawStanding(SpriteEffects.None, spriteBatch);
                     break;
 
                 case PlayerState.Dashing:

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Xml;
 using System;
+using System.Collections.Generic;
 
 namespace dash_game
 {
@@ -59,7 +60,10 @@ namespace dash_game
         private Enemy enemy;
 
         // Item declaration and random for spawn location
-        private Items item;
+        private Items item1;
+        private Items item2;
+        private Items item3;
+        List<Items> itemList;
         private Random random;
         public GameState currentState = GameState.Title;
 
@@ -103,10 +107,13 @@ namespace dash_game
             // Texture for the doors in adventure
             Texture2D doorTexture = Content.Load<Texture2D>("SpriteBatchForDash");
 
-            // Item to test
+            // Items to spawn randomly
             random = new Random();
-            item = new Items(new Rectangle(random.Next(100, 500), random.Next(100, 500), 25, 25), "Speed Boost", false, speedArrow);
-            
+            itemList = new List<Items>();
+            item1 = new Items(new Rectangle(random.Next(100, 500), random.Next(100, 500), 25, 25), "Speed Boost", false, speedArrow);
+            item2 = new Items(new Rectangle(random.Next(100, 500), random.Next(100, 500), 25, 25), "Health Pack", false, speedArrow);
+            item3 = new Items(new Rectangle(random.Next(100, 500), random.Next(100, 500), 25, 25), "Attack Boost", false, speedArrow);
+
             // Creation of both horde and level objects, done here so they can utilize sprites
             horde = new Horde(spriteSheet, player, _spriteBatch);
             currentLevel = new Level(player, "TrialLevel", spriteSheet, speedArrow, _spriteBatch, doorTexture);
@@ -158,7 +165,12 @@ namespace dash_game
                     {
                         paused = false;
                     }
-                    item.CheckCollision(player);
+
+                    foreach(Items i in itemList)
+                    {
+                        i.CheckCollision(player);
+                    }
+                    
                     break;
 
                 case GameState.Adventure:
@@ -231,10 +243,14 @@ namespace dash_game
                     // Drawing the player and enemies
                     player.Draw(_spriteBatch);
                     
-                    if (item.PickedUp == false) 
+                    foreach(Items i in itemList)
                     {
-                        item.Draw(_spriteBatch);
+                        if (i.PickedUp == false)
+                        {
+                            i.Draw(_spriteBatch);
+                        }
                     }
+                    
                     
                     horde.Draw();
 
