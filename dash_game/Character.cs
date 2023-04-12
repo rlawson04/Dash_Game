@@ -33,6 +33,10 @@ namespace dash_game
         protected double fps;
         protected double timePerFrame;
         protected int walkFrameCount = 3;
+        protected int rectOffsetY = 10;
+        protected int rectHeight = 28;
+        protected int rectWidth = 25;
+
 
         /// <summary>
 		/// Gets the current health of the character

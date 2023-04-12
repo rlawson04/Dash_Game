@@ -72,7 +72,7 @@ namespace dash_game
 				// Add enemies for num enemies
 				enemies.Add(new Enemy((2 * wave + 5),
 					new Vector2(xPos, yPos),
-					new Rectangle(xPos, yPos, 25, 25),
+					new Rectangle(xPos, yPos, 75, 75),
 					charSprites,
 					PlayerState.IdleRight,
 					false,
@@ -98,8 +98,7 @@ namespace dash_game
 			// Updates the enemies
 			foreach (Enemy enemy in enemies)
 			{
-				// Update the player
-				player.Update(kbState, kbPrevState);
+				
 
 				// Checks for collision
 				if (enemy.Rect.Intersects(player.Rect))

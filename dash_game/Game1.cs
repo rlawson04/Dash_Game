@@ -66,6 +66,7 @@ namespace dash_game
         // Texture 2d for the doorsprites
         private Texture2D doorTexture;
 
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -97,7 +98,7 @@ namespace dash_game
             Vector2 playerLoc = new Vector2(300f, 300f);
             Texture2D spriteSheet = Content.Load<Texture2D>("SpriteBatchForDash");
             Texture2D speedArrow = Content.Load<Texture2D>("Speed Arrow");
-            player = new Player(100, new Vector2(300,300), new Rectangle(300, 300, 25, 25), spriteSheet, PlayerState.IdleRight);
+            player = new Player(100, new Vector2(300,300), new Rectangle(300, 300, 50, 50), spriteSheet, PlayerState.IdleRight);
 
             // Texture for the doors in adventure
             Texture2D doorTexture = Content.Load<Texture2D>("SpriteBatchForDash");
@@ -110,6 +111,7 @@ namespace dash_game
             horde = new Horde(spriteSheet, player, _spriteBatch);
             currentLevel = new Level(player, "TrialLevel", spriteSheet, speedArrow, _spriteBatch, doorTexture);
             currentLevel.CreateLevel();
+
         }
 
         protected override void Update(GameTime gameTime)
@@ -119,39 +121,9 @@ namespace dash_game
 
             // TODO: Add your update logic here
             kbState = Keyboard.GetState();
-             
-            switch(player.State)
-            {
-                // If he is facing left, he can transition to walking left, facing right, and crouching left
-                case PlayerState.IdleLeft:
-                    if (kbState.IsKeyDown(Keys.A))
-                    {
-                        player.State = PlayerState.RunningLeft;
 
-                    }
-                    if (kbState.IsKeyDown(Keys.D) && kbPrevState.IsKeyUp(Keys.D))
-                    {
-                        player.State = PlayerState.IdleRight;
-                    }
-                    
-                    break;
-
-                // If he is facing right, he can transition to walking right,
-                case PlayerState.IdleRight:
-                    if (kbState.IsKeyDown(Keys.D))
-                    {
-                        player.State = PlayerState.RunningRight;
-
-                    }
-                    if (kbState.IsKeyDown(Keys.A) && kbPrevState.IsKeyUp(Keys.A))
-                    {
-                        player.State = PlayerState.IdleLeft;
-                    }
-
-                    break;
-
-
-            }
+            player.UpdateAnimation(gameTime);
+            
 
             switch (currentState)
             {
@@ -258,12 +230,11 @@ namespace dash_game
                 case GameState.Horde:
                     // Drawing the player and enemies
                     player.Draw(_spriteBatch);
-
+                    
                     if (item.PickedUp == false) 
                     {
                         item.Draw(_spriteBatch);
                     }
-                    
                     
                     horde.Draw();
 

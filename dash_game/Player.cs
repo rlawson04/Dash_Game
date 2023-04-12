@@ -111,45 +111,67 @@ namespace dash_game
         /// <param name="kbPrevState"> takes the game classes previous kbstate </param>
 		public void Update(KeyboardState kbState, KeyboardState kbPrevState)
 		{
-            Movement(kbState);
+            Movement(kbState, kbPrevState);
             Dash(kbState, kbPrevState);
         }
         
         /// <summary>
         /// Handles the movement in the 4 directions
         /// </summary>
-		public void Movement(KeyboardState kbState)
+		public void Movement(KeyboardState kbState, KeyboardState kbPrevState)
 		{
 
-            switch (state)
+            switch (State)
             {
+                case PlayerState.IdleLeft:
+                    if (kbState.IsKeyDown(Keys.A))
+                    {
+                        State = PlayerState.RunningLeft;
+                    }
+                    if (kbState.IsKeyDown(Keys.D) && kbPrevState.IsKeyUp(Keys.D))
+                    {
+                        State = PlayerState.IdleRight;
+                    }
 
-                // While walking he moves 3 pixels per frame and then if the key is no longer being pressed,
-                // he transitions back to standing 
+                    break;
+
+                case PlayerState.IdleRight:
+                    if (kbState.IsKeyDown(Keys.D))
+                    {
+                        State = PlayerState.RunningRight;
+                    }
+                    if (kbState.IsKeyDown(Keys.A) && kbPrevState.IsKeyUp(Keys.A))
+                    {
+                        State = PlayerState.IdleLeft;
+                    }
+
+                    break;
+
                 case PlayerState.RunningLeft:
-                    if (kbState.IsKeyDown(Keys.A) && characterPosition.X > 42)
+                    if (kbState.IsKeyDown(Keys.A) && characterPosition.X > 32)
                     {
                         characterPosition.X -= movementSpeed;
                         rect.X -= movementSpeed;
                     }
                     else
                     {
-                        state = PlayerState.IdleLeft;
+                        State = PlayerState.IdleLeft;
                     }
+
                     break;
 
-                // While walking he moves 3 pixels per frame and then if the key is no longer being pressed,
-                // he transitions back to standing
+                
                 case PlayerState.RunningRight:
-                    if (kbState.IsKeyDown(Keys.D) && (characterPosition.X + rect.Width) < 1160)
+                    if (kbState.IsKeyDown(Keys.D) && (characterPosition.X + rect.Width) < 1216)
                     {
                         characterPosition.X += movementSpeed;
                         rect.X += movementSpeed;
                     }
                     else
                     {
-                        state = PlayerState.IdleRight;
+                        State = PlayerState.IdleRight;
                     }
+
                     break;
             }
 
@@ -186,7 +208,7 @@ namespace dash_game
         /// <param name="spriteBatch"> takes the spritebatch from the game's draw method </param>
 		public void Draw(SpriteBatch spriteBatch)
         {
-            switch (State)
+            switch (state)
             {
                 case PlayerState.RunningLeft:
                     DrawWalking(SpriteEffects.FlipHorizontally, spriteBatch);
@@ -203,15 +225,22 @@ namespace dash_game
                 case PlayerState.IdleRight:
                     DrawStanding(SpriteEffects.None, spriteBatch);
                     break;
+
+                case PlayerState.Dashing:
+                    DrawDashing(SpriteEffects.None, spriteBatch);
+                    break;
             }
         }
 
         public void DrawWalking(SpriteEffects flipSprite, SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(spriteSheet, 
-                this.characterPosition, 
+                characterPosition, 
                 new Rectangle(
-                    30,10,25,25
+                    31 * frame, 
+                    rectOffsetY, 
+                    rectWidth, 
+                    rectHeight
                     ), 
                 Color.White, 0, 
                 Vector2.Zero, 4.0f, 
@@ -220,8 +249,26 @@ namespace dash_game
 
         public void DrawStanding(SpriteEffects flipSprite, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(spriteSheet, characterPosition,
-                new Rectangle(0, 100, 25, 25),
+            spriteBatch.Draw(spriteSheet, 
+                characterPosition,
+                new Rectangle
+                (0, 
+                rectOffsetY, 
+                rectWidth, 
+                rectHeight),
+                Color.White, 0, Vector2.Zero, 4f,
+                flipSprite, 0);
+        }
+
+        public void DrawDashing(SpriteEffects flipSprite, SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(spriteSheet,
+                characterPosition,
+                new Rectangle
+                (124,
+                rectOffsetY,
+                rectWidth,
+                rectHeight),
                 Color.White, 0, Vector2.Zero, 4f,
                 flipSprite, 0);
         }
@@ -262,7 +309,7 @@ namespace dash_game
             }
         }
 
-        /*
+        
         /// <summary>
         /// Updates Player's animation as necessary
         /// </summary>
@@ -288,7 +335,7 @@ namespace dash_game
                                                 // This keeps the time passed 
             }
         }
-        */
+        
     }
 }
 
