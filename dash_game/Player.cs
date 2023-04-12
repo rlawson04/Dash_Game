@@ -120,7 +120,7 @@ namespace dash_game
         /// </summary>
 		public void Movement(KeyboardState kbState, KeyboardState kbPrevState)
 		{
-
+            // Depending on the inputs, the state of the player changes 
             switch (State)
             {
                 case PlayerState.IdleLeft:
@@ -128,11 +128,18 @@ namespace dash_game
                     {
                         State = PlayerState.RunningLeft;
                     }
+                    if (kbState.IsKeyDown(Keys.W) && kbPrevState.IsKeyUp(Keys.W))
+                    {
+                        State = PlayerState.IdleUp;
+                    }
                     if (kbState.IsKeyDown(Keys.D) && kbPrevState.IsKeyUp(Keys.D))
                     {
                         State = PlayerState.IdleRight;
                     }
-
+                    if (kbState.IsKeyDown(Keys.S) && kbPrevState.IsKeyUp(Keys.S))
+                    {
+                        State = PlayerState.IdleDown;
+                    }
                     break;
 
                 case PlayerState.IdleRight:
@@ -140,11 +147,56 @@ namespace dash_game
                     {
                         State = PlayerState.RunningRight;
                     }
+                    if (kbState.IsKeyDown(Keys.W) && kbPrevState.IsKeyUp(Keys.W))
+                    {
+                        State = PlayerState.IdleUp;
+                    }
                     if (kbState.IsKeyDown(Keys.A) && kbPrevState.IsKeyUp(Keys.A))
                     {
                         State = PlayerState.IdleLeft;
                     }
+                    if (kbState.IsKeyDown(Keys.S) && kbPrevState.IsKeyUp(Keys.S))
+                    {
+                        State = PlayerState.IdleDown;
+                    }
+                    break;
 
+                case PlayerState.IdleUp:
+                    if (kbState.IsKeyDown(Keys.W))
+                    {
+                        State = PlayerState.RunningUp;
+                    }
+                    if (kbState.IsKeyDown(Keys.A) && kbPrevState.IsKeyUp(Keys.A))
+                    {
+                        State = PlayerState.IdleLeft;
+                    }
+                    if (kbState.IsKeyDown(Keys.D) && kbPrevState.IsKeyUp(Keys.D))
+                    {
+                        State = PlayerState.IdleRight;
+                    }
+                    if (kbState.IsKeyDown(Keys.S) && kbPrevState.IsKeyUp(Keys.S))
+                    {
+                        State = PlayerState.IdleDown;
+                    }
+                    break;
+
+                case PlayerState.IdleDown:
+                    if (kbState.IsKeyDown(Keys.S))
+                    {
+                        State = PlayerState.RunningDown;
+                    }
+                    if (kbState.IsKeyDown(Keys.W) && kbPrevState.IsKeyUp(Keys.W))
+                    {
+                        State = PlayerState.IdleUp;
+                    }
+                    if (kbState.IsKeyDown(Keys.A) && kbPrevState.IsKeyUp(Keys.A))
+                    {
+                        State = PlayerState.IdleLeft;
+                    }
+                    if (kbState.IsKeyDown(Keys.D) && kbPrevState.IsKeyUp(Keys.D))
+                    {
+                        State = PlayerState.IdleRight;
+                    }
                     break;
 
                 case PlayerState.RunningLeft:
@@ -152,6 +204,17 @@ namespace dash_game
                     {
                         characterPosition.X -= movementSpeed;
                         rect.X -= movementSpeed;
+
+                        if (kbState.IsKeyDown(Keys.W) == true && characterPosition.Y > 98)
+                        {
+                            characterPosition.Y -= movementSpeed;
+                            rect.Y -= movementSpeed;
+                        }
+                        if (kbState.IsKeyDown(Keys.S) == true && (characterPosition.Y + rect.Height) < 605)
+                        {
+                            characterPosition.Y += movementSpeed;
+                            rect.Y += movementSpeed;
+                        }
                     }
                     else
                     {
@@ -166,6 +229,17 @@ namespace dash_game
                     {
                         characterPosition.X += movementSpeed;
                         rect.X += movementSpeed;
+
+                        if (kbState.IsKeyDown(Keys.W) == true && characterPosition.Y > 98)
+                        {
+                            characterPosition.Y -= movementSpeed;
+                            rect.Y -= movementSpeed;
+                        }
+                        if (kbState.IsKeyDown(Keys.S) == true && (characterPosition.Y + rect.Height) < 605)
+                        {
+                            characterPosition.Y += movementSpeed;
+                            rect.Y += movementSpeed;
+                        }
                     }
                     else
                     {
@@ -173,33 +247,61 @@ namespace dash_game
                     }
 
                     break;
+
+                case PlayerState.RunningUp:
+                    if (kbState.IsKeyDown(Keys.W) == true && characterPosition.Y > 98)
+                    {
+                        characterPosition.Y -= movementSpeed;
+                        rect.Y -= movementSpeed;
+
+                        if (kbState.IsKeyDown(Keys.A) && characterPosition.X > 32)
+                        {
+                            characterPosition.X -= movementSpeed;
+                            rect.X -= movementSpeed;
+                        }
+                        if (kbState.IsKeyDown(Keys.D) && (characterPosition.X + rect.Width) < 1216)
+                        {
+                            characterPosition.X += movementSpeed;
+                            rect.X += movementSpeed;
+
+                        }
+                    }
+                    else
+                    {
+                        State = PlayerState.IdleUp;
+                    }
+
+                    break;
+
+
+                case PlayerState.RunningDown:
+                   
+                    if (kbState.IsKeyDown(Keys.S) == true && (characterPosition.Y + rect.Height) < 605)
+                    {
+                        characterPosition.Y += movementSpeed;
+                        rect.Y += movementSpeed;
+
+                        if (kbState.IsKeyDown(Keys.A) && characterPosition.X > 32)
+                        {
+                            characterPosition.X -= movementSpeed;
+                            rect.X -= movementSpeed;
+                        }
+                        if (kbState.IsKeyDown(Keys.D) && (characterPosition.X + rect.Width) < 1216)
+                        {
+                            characterPosition.X += movementSpeed;
+                            rect.X += movementSpeed;
+
+                        }
+                    }
+                    else
+                    {
+                        State = PlayerState.IdleDown;
+                    }
+
+                    break;
             }
 
-            // Moves the player position and rectangle based on each of the four inputs
-            if (kbState.IsKeyDown(Keys.W) == true && characterPosition.Y > 98)
-            {
-                characterPosition.Y -= movementSpeed;
-                rect.Y -= movementSpeed;
-            }
-            /*
-            if (kbState.IsKeyDown(Keys.A) == true && characterPosition.X > 32)
-            {
-				characterPosition.X -= movementSpeed;	
-                rect.X -= movementSpeed;
-            }
-            */
-            if (kbState.IsKeyDown(Keys.S) == true && (characterPosition.Y + rect.Height) < 605)
-            {
-				characterPosition.Y += movementSpeed;
-                rect.Y += movementSpeed;
-            }
-            /*
-            if (kbState.IsKeyDown(Keys.D) == true && (characterPosition.X + rect.Width) < 1216)
-            {
-				characterPosition.X += movementSpeed;
-                rect.X += movementSpeed;
-            }
-            */
+           
         }
 
         /// <summary>
@@ -208,6 +310,7 @@ namespace dash_game
         /// <param name="spriteBatch"> takes the spritebatch from the game's draw method </param>
 		public void Draw(SpriteBatch spriteBatch)
         {
+            // Draws the player based on their current state
             switch (state)
             {
                 case PlayerState.RunningLeft:
@@ -218,6 +321,14 @@ namespace dash_game
                     DrawWalking(SpriteEffects.None, spriteBatch);
                     break;
 
+                case PlayerState.RunningUp:
+                    DrawWalking(SpriteEffects.None, spriteBatch);
+                    break;
+
+                case PlayerState.RunningDown:
+                    DrawWalking(SpriteEffects.FlipVertically, spriteBatch);
+                    break;
+
                 case PlayerState.IdleLeft:
                     DrawStanding(SpriteEffects.FlipHorizontally, spriteBatch);
                     break;
@@ -226,40 +337,27 @@ namespace dash_game
                     DrawStanding(SpriteEffects.None, spriteBatch);
                     break;
 
+                case PlayerState.IdleUp:
+                    DrawStanding(SpriteEffects.None, spriteBatch);
+                    break;
+
+                case PlayerState.IdleDown:
+                    DrawStanding(SpriteEffects.FlipVertically, spriteBatch);
+                    break;
+
                 case PlayerState.Dashing:
                     DrawDashing(SpriteEffects.None, spriteBatch);
                     break;
             }
         }
 
-        public void DrawWalking(SpriteEffects flipSprite, SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(spriteSheet, 
-                characterPosition, 
-                new Rectangle(
-                    31 * frame, 
-                    rectOffsetY, 
-                    rectWidth, 
-                    rectHeight
-                    ), 
-                Color.White, 0, 
-                Vector2.Zero, 4.0f, 
-                flipSprite, 0);
-        }
+        
 
-        public void DrawStanding(SpriteEffects flipSprite, SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(spriteSheet, 
-                characterPosition,
-                new Rectangle
-                (0, 
-                rectOffsetY, 
-                rectWidth, 
-                rectHeight),
-                Color.White, 0, Vector2.Zero, 4f,
-                flipSprite, 0);
-        }
-
+        /// <summary>
+        /// Draws the player dashing
+        /// </summary>
+        /// <param name="flipSprite"> effect to flip sprite if needed </param>
+        /// <param name="spriteBatch"> spritebatch initialized in game </param>
         public void DrawDashing(SpriteEffects flipSprite, SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(spriteSheet,

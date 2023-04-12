@@ -81,6 +81,42 @@ namespace dash_game
             this.state = startingState;
         }
 
-        
+        /// <summary>
+        /// Draws the character based on the current frame at some point in the walking animation
+        /// </summary>
+        /// <param name="flipSprite"> effect to flip sprite if needed </param>
+        /// <param name="spriteBatch"> spritebatch initialized in game </param>
+        public void DrawWalking(SpriteEffects flipSprite, SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(spriteSheet,
+                characterPosition,
+                new Rectangle(
+                    31 * frame,
+                    rectOffsetY,
+                    rectWidth,
+                    rectHeight
+                    ),
+                Color.White, 0,
+                Vector2.Zero, 4.0f,
+                flipSprite, 0);
+        }
+
+        /// <summary>
+        /// Draws the character idling, facing either left or right
+        /// </summary>
+        /// <param name="flipSprite"> effect to flip sprite if needed </param>
+        /// <param name="spriteBatch"> spritebatch initialized in game </param>
+        public void DrawStanding(SpriteEffects flipSprite, SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(spriteSheet,
+                characterPosition,
+                new Rectangle
+                (0,
+                rectOffsetY,
+                rectWidth,
+                rectHeight),
+                Color.White, 0, Vector2.Zero, 4f,
+                flipSprite, 0);
+        }
     }
 }
