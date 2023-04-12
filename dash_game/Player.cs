@@ -15,13 +15,17 @@ namespace dash_game
     {
         RunningLeft, // Animations for running
         RunningRight,
-        RunningUp,
-        RunningDown,
+        RunningUpLeft,
+        RunningUpRight,
+        RunningDownLeft,
+        RunningDownRight,
         Dashing,
         IdleLeft,
         IdleRight,
-        IdleUp,
-        IdleDown,// Handles the idle animation 
+        IdleUpRight,
+        IdleUpLeft,
+        IdleDownRight,
+        IdleDownLeft,// Handles the idle animation 
     }
 
     public class Player : Character
@@ -132,7 +136,7 @@ namespace dash_game
                     }
                     if (kbState.IsKeyDown(Keys.W) && kbPrevState.IsKeyUp(Keys.W))
                     {
-                        State = PlayerState.IdleUp;
+                        State = PlayerState.IdleUpLeft;
                     }
                     if (kbState.IsKeyDown(Keys.D) && kbPrevState.IsKeyUp(Keys.D))
                     {
@@ -140,7 +144,7 @@ namespace dash_game
                     }
                     if (kbState.IsKeyDown(Keys.S) && kbPrevState.IsKeyUp(Keys.S))
                     {
-                        State = PlayerState.IdleDown;
+                        State = PlayerState.IdleDownLeft;
                     }
                     break;
 
@@ -152,7 +156,7 @@ namespace dash_game
                     }
                     if (kbState.IsKeyDown(Keys.W) && kbPrevState.IsKeyUp(Keys.W))
                     {
-                        State = PlayerState.IdleUp;
+                        State = PlayerState.IdleUpRight;
                     }
                     if (kbState.IsKeyDown(Keys.A) && kbPrevState.IsKeyUp(Keys.A))
                     {
@@ -160,15 +164,15 @@ namespace dash_game
                     }
                     if (kbState.IsKeyDown(Keys.S) && kbPrevState.IsKeyUp(Keys.S))
                     {
-                        State = PlayerState.IdleDown;
+                        State = PlayerState.IdleDownRight;
                     }
                     break;
 
                 // Facing up, the player can face any other direction or run up
-                case PlayerState.IdleUp:
+                case PlayerState.IdleUpRight:
                     if (kbState.IsKeyDown(Keys.W))
                     {
-                        State = PlayerState.RunningUp;
+                        State = PlayerState.RunningUpRight;
                     }
                     if (kbState.IsKeyDown(Keys.A) && kbPrevState.IsKeyUp(Keys.A))
                     {
@@ -180,19 +184,59 @@ namespace dash_game
                     }
                     if (kbState.IsKeyDown(Keys.S) && kbPrevState.IsKeyUp(Keys.S))
                     {
-                        State = PlayerState.IdleDown;
+                        State = PlayerState.IdleDownRight;
+                    }
+                    break;
+
+                // Facing up, the player can face any other direction or run up
+                case PlayerState.IdleUpLeft:
+                    if (kbState.IsKeyDown(Keys.W))
+                    {
+                        State = PlayerState.RunningUpLeft;
+                    }
+                    if (kbState.IsKeyDown(Keys.A) && kbPrevState.IsKeyUp(Keys.A))
+                    {
+                        State = PlayerState.IdleLeft;
+                    }
+                    if (kbState.IsKeyDown(Keys.D) && kbPrevState.IsKeyUp(Keys.D))
+                    {
+                        State = PlayerState.IdleRight;
+                    }
+                    if (kbState.IsKeyDown(Keys.S) && kbPrevState.IsKeyUp(Keys.S))
+                    {
+                        State = PlayerState.IdleDownLeft;
                     }
                     break;
 
                 // Facing down, the player can face any other direction or run down
-                case PlayerState.IdleDown:
+                case PlayerState.IdleDownLeft:
                     if (kbState.IsKeyDown(Keys.S))
                     {
-                        State = PlayerState.RunningDown;
+                        State = PlayerState.RunningDownLeft;
                     }
                     if (kbState.IsKeyDown(Keys.W) && kbPrevState.IsKeyUp(Keys.W))
                     {
-                        State = PlayerState.IdleUp;
+                        State = PlayerState.IdleUpLeft;
+                    }
+                    if (kbState.IsKeyDown(Keys.A) && kbPrevState.IsKeyUp(Keys.A))
+                    {
+                        State = PlayerState.IdleLeft;
+                    }
+                    if (kbState.IsKeyDown(Keys.D) && kbPrevState.IsKeyUp(Keys.D))
+                    {
+                        State = PlayerState.IdleRight;
+                    }
+                    break;
+
+                // Facing down, the player can face any other direction or run down
+                case PlayerState.IdleDownRight:
+                    if (kbState.IsKeyDown(Keys.S))
+                    {
+                        State = PlayerState.RunningDownRight;
+                    }
+                    if (kbState.IsKeyDown(Keys.W) && kbPrevState.IsKeyUp(Keys.W))
+                    {
+                        State = PlayerState.IdleUpRight;
                     }
                     if (kbState.IsKeyDown(Keys.A) && kbPrevState.IsKeyUp(Keys.A))
                     {
@@ -255,7 +299,7 @@ namespace dash_game
                     break;
 
                 // Running up, the player can face up or run left and right diagonally
-                case PlayerState.RunningUp:
+                case PlayerState.RunningUpRight:
                     if (kbState.IsKeyDown(Keys.W) == true && characterPosition.Y > 98)
                     {
                         characterPosition.Y -= movementSpeed;
@@ -275,13 +319,39 @@ namespace dash_game
                     }
                     else
                     {
-                        State = PlayerState.IdleUp;
+                        State = PlayerState.IdleUpRight;
+                    }
+
+                    break;
+
+                // Running up, the player can face up or run left and right diagonally
+                case PlayerState.RunningUpLeft:
+                    if (kbState.IsKeyDown(Keys.W) == true && characterPosition.Y > 98)
+                    {
+                        characterPosition.Y -= movementSpeed;
+                        rect.Y -= movementSpeed;
+
+                        if (kbState.IsKeyDown(Keys.A) && characterPosition.X > 32)
+                        {
+                            characterPosition.X -= movementSpeed;
+                            rect.X -= movementSpeed;
+                        }
+                        if (kbState.IsKeyDown(Keys.D) && (characterPosition.X + rect.Width) < 1216)
+                        {
+                            characterPosition.X += movementSpeed;
+                            rect.X += movementSpeed;
+
+                        }
+                    }
+                    else
+                    {
+                        State = PlayerState.IdleUpLeft;
                     }
 
                     break;
 
                 // Running down, the player can face down or run left and right diagonally
-                case PlayerState.RunningDown:
+                case PlayerState.RunningDownRight:
                    
                     if (kbState.IsKeyDown(Keys.S) == true && (characterPosition.Y + rect.Height) < 605)
                     {
@@ -302,7 +372,34 @@ namespace dash_game
                     }
                     else
                     {
-                        State = PlayerState.IdleDown;
+                        State = PlayerState.IdleDownRight;
+                    }
+
+                    break;
+
+                // Running down, the player can face down or run left and right diagonally
+                case PlayerState.RunningDownLeft:
+
+                    if (kbState.IsKeyDown(Keys.S) == true && (characterPosition.Y + rect.Height) < 605)
+                    {
+                        characterPosition.Y += movementSpeed;
+                        rect.Y += movementSpeed;
+
+                        if (kbState.IsKeyDown(Keys.A) && characterPosition.X > 32)
+                        {
+                            characterPosition.X -= movementSpeed;
+                            rect.X -= movementSpeed;
+                        }
+                        if (kbState.IsKeyDown(Keys.D) && (characterPosition.X + rect.Width) < 1216)
+                        {
+                            characterPosition.X += movementSpeed;
+                            rect.X += movementSpeed;
+
+                        }
+                    }
+                    else
+                    {
+                        State = PlayerState.IdleDownLeft;
                     }
 
                     break;
@@ -328,12 +425,20 @@ namespace dash_game
                     DrawWalking(SpriteEffects.None, spriteBatch);
                     break;
 
-                case PlayerState.RunningUp:
+                case PlayerState.RunningUpRight:
                     DrawWalking(SpriteEffects.None, spriteBatch);
                     break;
 
-                case PlayerState.RunningDown:
+                case PlayerState.RunningUpLeft:
+                    DrawWalking(SpriteEffects.FlipHorizontally, spriteBatch);
+                    break;
+
+                case PlayerState.RunningDownRight:
                     DrawWalking(SpriteEffects.None, spriteBatch);
+                    break;
+
+                case PlayerState.RunningDownLeft:
+                    DrawWalking(SpriteEffects.FlipHorizontally, spriteBatch);
                     break;
 
                 case PlayerState.IdleLeft:
@@ -344,12 +449,20 @@ namespace dash_game
                     DrawStanding(SpriteEffects.None, spriteBatch);
                     break;
 
-                case PlayerState.IdleUp:
+                case PlayerState.IdleUpRight:
                     DrawStanding(SpriteEffects.None, spriteBatch);
                     break;
 
-                case PlayerState.IdleDown:
+                case PlayerState.IdleUpLeft:
+                    DrawStanding(SpriteEffects.FlipHorizontally, spriteBatch);
+                    break;
+
+                case PlayerState.IdleDownRight:
                     DrawStanding(SpriteEffects.None, spriteBatch);
+                    break;
+
+                case PlayerState.IdleDownLeft:
+                    DrawStanding(SpriteEffects.FlipHorizontally, spriteBatch);
                     break;
 
                 case PlayerState.Dashing:
