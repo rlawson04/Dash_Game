@@ -134,8 +134,8 @@ namespace dash_game
 			//these enemieas are facing left
 			else if (tempRNG == 1)
             {
-                hitbox = new Rectangle((int)adjustedPos.X - 50, (int)adjustedPos.Y + 25, -30, 65);
-				_spriteBatch.Draw(hitTexture, hitbox, Color.Red);
+                hitbox = new Rectangle((int)adjustedPos.X - 50, (int)adjustedPos.Y + 25, 30, 65);
+				_spriteBatch.Draw(hitTexture, new Rectangle (hitbox.X + 30, hitbox.Y, 30, 65), Color.Red);
 			}
 		}
         
