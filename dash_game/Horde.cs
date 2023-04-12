@@ -17,6 +17,7 @@ namespace dash_game
 		private List<Enemy> enemies = new List<Enemy>();
 		private Texture2D charSprites;
 		private SpriteBatch _spriteBatch;
+		private Texture2D hitTexture;
 
 		// Use random to determine the spawnpoint for the enemies
 		Random rand = new Random();
@@ -47,21 +48,35 @@ namespace dash_game
 		public int Wave
 		{
 			get { return wave; }
+			set { wave = value; }
 		}
 
-		// Constructor
-		public Horde(Texture2D charSprites, Player player, SpriteBatch _spriteBatch)
-		{
-			this.charSprites = charSprites;
-			this.player = player;
-			this._spriteBatch = _spriteBatch;
+		public List<Enemy> Enemies
+        {
+			get { return enemies; }
+			set { enemies = value; }
         }
 
-		// Methods
-		/// <summary>
-		/// Handles everything that will happen everytime there is a new wave
-		/// </summary>
-		public void newWave()
+		public int NumEnemies
+        {
+			get { return numEnemies; }
+			set { numEnemies = value; }
+        }
+
+		// Constructor
+        public Horde(Texture2D charSprites, Player player, SpriteBatch _spriteBatch, Texture2D hitTexture)
+        {
+            this.charSprites = charSprites;
+            this.player = player;
+            this._spriteBatch = _spriteBatch;
+            this.hitTexture = hitTexture;
+        }
+
+        // Methods
+        /// <summary>
+        /// Handles everything that will happen everytime there is a new wave
+        /// </summary>
+        public void newWave()
 		{
 			for (int i = 0; i < numEnemies; i++)
 			{
@@ -76,7 +91,8 @@ namespace dash_game
 					charSprites,
 					PlayerState.IdleRight,
 					false,
-					"ninja"));
+					"ninja",
+					5));
 			}
 
 			// Increment wave and modify numEnemies
@@ -106,6 +122,13 @@ namespace dash_game
 					enemy.Health -= player.Damage;
 					score += 5;
 				}
+
+				//checks for collision with hitbox of attack
+				if (enemy.Hitbox.Intersects(player.Rect))
+                {
+					player.Health -= enemy.Damage;
+                }
+
 			}
 
 			// If an enemies health is zero remove it
@@ -114,7 +137,6 @@ namespace dash_game
 				if (enemies[i].Health <= 0)
 				{
 					enemies.Remove(enemies[i]);
-					player.Health += 50;
 					score += 10;
 				}
 			}
@@ -129,6 +151,7 @@ namespace dash_game
 			foreach (Enemy enemy in enemies)
 			{
 				enemy.Draw(_spriteBatch);
+				enemy.MeleeAttack(_spriteBatch, hitTexture);
 			}
 		}
 	}

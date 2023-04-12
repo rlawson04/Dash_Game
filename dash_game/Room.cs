@@ -118,7 +118,8 @@ namespace dash_game
                         charSprites,
                         PlayerState.IdleRight,
                         false,
-                        "ninja"));
+                        "ninja",
+						5));
                 }
 
                 // Set the room type
@@ -142,7 +143,8 @@ namespace dash_game
 						charSprites,
 						PlayerState.IdleRight,
 						true,
-						"ninja"));
+						"ninja",
+						5));
 
                 // Set the room type
                 currentRoomType = RoomType.Boss;

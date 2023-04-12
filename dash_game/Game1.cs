@@ -103,6 +103,8 @@ namespace dash_game
             Texture2D spriteSheet = Content.Load<Texture2D>("SpriteBatchForDash");
             Texture2D speedArrow = Content.Load<Texture2D>("Speed Arrow");
             player = new Player(100, new Vector2(300,300), new Rectangle(300, 300, 50, 50), spriteSheet, PlayerState.IdleRight);
+            Texture2D hitTexture = new Texture2D(GraphicsDevice, 1, 1);
+            hitTexture.SetData(new[] { Color.White });
 
             // Texture for the doors in adventure
             Texture2D doorTexture = Content.Load<Texture2D>("SpriteBatchForDash");
@@ -115,7 +117,7 @@ namespace dash_game
             item3 = new Items(new Rectangle(random.Next(100, 500), random.Next(100, 500), 25, 25), "Attack Boost", false, speedArrow);
 
             // Creation of both horde and level objects, done here so they can utilize sprites
-            horde = new Horde(spriteSheet, player, _spriteBatch);
+            horde = new Horde(spriteSheet, player, _spriteBatch, hitTexture);
             currentLevel = new Level(player, "TrialLevel", spriteSheet, speedArrow, _spriteBatch, doorTexture);
             currentLevel.CreateLevel();
 
@@ -205,6 +207,10 @@ namespace dash_game
                     if (kbState.IsKeyUp(Keys.Space) && kbPrevState.IsKeyDown(Keys.Space))
                     {
                         currentState = GameState.Title;
+                        horde.Wave = 0;
+                        horde.Enemies.Clear();
+                        player.Health = 100;
+                        horde.NumEnemies = 3;
                     }
                     break;
             }
@@ -242,8 +248,8 @@ namespace dash_game
                 case GameState.Horde:
                     // Drawing the player and enemies
                     player.Draw(_spriteBatch);
-                    
-                    foreach(Items i in itemList)
+
+                    foreach (Items i in itemList)
                     {
                         if (i.PickedUp == false)
                         {
