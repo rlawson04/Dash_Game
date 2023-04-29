@@ -99,6 +99,49 @@ namespace dash_game
 		}
 
 		/// <summary>
+		/// Create level method that uses premade hardcoded rooms instead of a file
+		/// </summary>
+		/// <param name="data">Array of characters that will become the rooms</param>
+		public void CreateLevel(char[,] data)
+		{
+			// Set the bounds of the room array
+			rooms = new Room[data.GetLength(0), data.GetLength(1)];
+
+			// Create each room based on the data
+			for (int i = 0; i < data.GetLength(0); i++)
+			{
+				for (int j = 0; j < data.GetLength(1); j++)
+				{
+                    if (data[i, j] == 'X')
+                    {
+                        rooms[i, j] = null;
+                    }
+                    else if (data[i, j] == 'S')
+                    {
+                        rooms[i, j] = new Room(data[i, j], player, charSprites, spriteBatch, doorTexture, hitTexture, itemSprites);
+                        current = rooms[i, j];
+                    }
+                    else
+                    {
+                        rooms[i, j] = new Room(data[i, j], player, charSprites, spriteBatch, doorTexture, hitTexture, itemSprites);
+                    }
+                }
+			}
+
+            // Run the logic to set the neighbors of each room
+            for (int i = 0; i < rooms.GetLength(0); i++)
+            {
+                for (int j = 0; j < rooms.GetLength(1); j++)
+                {
+                    if (rooms[i, j] != null && rooms[i, j].CurrentRoomType == Room.RoomType.Starting)
+                    {
+                        LinkRooms(rooms[i, j], i, j);
+                    }
+                }
+            }
+        }
+
+		/// <summary>
 		/// Links all of the rooms in the array
 		/// </summary>
 		/// <param name="current">Current room to check</param>

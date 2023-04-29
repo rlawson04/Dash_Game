@@ -14,9 +14,12 @@ namespace dash_game
 	public class TitleScreen
 	{
 		// Create an array for the buttons
-		Rectangle[] buttons = new Rectangle[3] {new Rectangle(200, 450, 256, 64),
+		Rectangle[] buttons = new Rectangle[3]
+		{
+			new Rectangle(200, 450, 256, 64),
 			new Rectangle(506, 450, 256, 64),
-			new Rectangle(812, 450, 256, 64)};
+			new Rectangle(812, 450, 256, 64)
+		};
 
 		// Create mouse states
 		MouseState mState;

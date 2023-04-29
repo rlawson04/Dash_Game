@@ -14,6 +14,7 @@ namespace dash_game
         {
             Title,
             Horde,
+            LevelSelect,
             Adventure,
             Stats,
             GameOver
@@ -41,6 +42,7 @@ namespace dash_game
         Horde horde;
         // Creating a level, at some point this will be able to take in text but currently just runs a trial
         Level currentLevel;
+        AdventureMenuScreen levelSelect;
 
         // Keyboard and mouse states
         KeyboardState kbState;
@@ -116,11 +118,12 @@ namespace dash_game
             item2 = new Items(new Rectangle(random.Next(100, 500), random.Next(100, 500), 25, 25), "Health Pack", false, speedArrow);
             item3 = new Items(new Rectangle(random.Next(100, 500), random.Next(100, 500), 25, 25), "Attack Boost", false, speedArrow);
 
+            // Create an instance of the adventure modes title screen
+            levelSelect = new AdventureMenuScreen();
+
             // Creation of both horde and level objects, done here so they can utilize sprites
             horde = new Horde(spriteSheet, player, _spriteBatch, hitTexture);
             currentLevel = new Level(player, "TrialLevel", spriteSheet, speedArrow, _spriteBatch, doorTexture, hitTexture);
-            currentLevel.CreateLevel();
-
         }
 
         protected override void Update(GameTime gameTime)
@@ -173,6 +176,14 @@ namespace dash_game
                         i.CheckCollision(player);
                     }
                     
+                    break;
+
+                case GameState.LevelSelect:
+                    // Runs the update for the level select mode and initializes the adventure level
+                    if (levelSelect.Update(currentLevel))
+                    {
+                        currentState = GameState.Adventure;
+                    }
                     break;
 
                 case GameState.Adventure:
@@ -277,6 +288,14 @@ namespace dash_game
                         _spriteBatch.DrawString(titleFont, "Paused", new Vector2(640, 400) - (titleFont.MeasureString("Paused") / 2), Color.Black);
                         _spriteBatch.DrawString(gameFont, "Press P to un-pause", new Vector2(640, 500) - (gameFont.MeasureString("Press P to un-pause") / 2), Color.Black);
                     }
+                    break;
+
+                case GameState.LevelSelect:
+                    // Draws the backgound shader
+                    _spriteBatch.Draw(background, new Rectangle(0, 0, background.Width, background.Height), shader);
+
+                    // Draws everything needed for the screen
+                    levelSelect.Draw(_spriteBatch, button, gameFont, titleFont);
                     break;
 
                 // Draws enemies, items, and the player for the classic mode
