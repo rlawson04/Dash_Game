@@ -224,6 +224,11 @@ namespace dash_game
 
 				case RoomType.Item:
 					item.CheckCollision(player);
+					// Make sure that the player picks up the item
+					if (item.PickedUp == true)
+					{
+						cleared = true;
+					}
 					break;
 
 				case RoomType.Boss: // Runs the same logic as battle because the boss is currently treated as a special enemy
@@ -297,7 +302,10 @@ namespace dash_game
 
                 case RoomType.Item:
 					// Draw the item at the start of the room
-					item.Draw(spriteBatch);
+					if (item.PickedUp == false)
+					{
+						item.Draw(spriteBatch);
+					}
                     break;
 
                 case RoomType.Boss:

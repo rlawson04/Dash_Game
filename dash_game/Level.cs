@@ -40,6 +40,7 @@ namespace dash_game
 			this.player = player;
 			this.fileName = fileName;
 			this.charSprites = charSprites;
+			this.itemSprites = itemSprites;
 			this.spriteBatch = spriteBatch;
 			this.doorTexture = doorTexture;
 			this.hitTexture = hitTexture;
@@ -148,7 +149,7 @@ namespace dash_game
 				current = newRoom;
 
 				// If the room is a battle room change cleared to false
-				if (current.CurrentRoomType == Room.RoomType.Battle || current.CurrentRoomType == Room.RoomType.Boss)
+				if (current.CurrentRoomType == Room.RoomType.Battle || current.CurrentRoomType == Room.RoomType.Boss || current.CurrentRoomType == Room.RoomType.Item)
 				{
 					current.Cleared = false;
 				}
