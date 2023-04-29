@@ -1,0 +1,23 @@
+﻿If you want to change the current custom level or create one of your own there are a couple rules to follow.
+    1. On the first line of the text file you have to specify the dimensions of the level that you want to create.
+       For example, a level layout with 6 rows and 8 columns would have the first line be formatted as "6,8".
+       The next line of the file is where you can start putting the custom levels data.
+
+    2. When messing around with room data itself there are only a few characters that you can use.
+       Every level should include an S for the starting room.
+       Battle rooms are defined by an integer less than 10 that holds that number of enemies.
+       Boss rooms are defined by B.
+       Finally item rooms are defined by I.
+
+    3. Please ensure that there is a border of garbage characters around the level itself,
+       garbage characters are other characters that have not been defined above.
+
+Example level: (Same as the default custom level for the game)
+
+6,8
+XXXXXXXX
+XXXXBXXX
+XXXI3XXX
+XX45S6XX
+XXX3X5XX
+XXXXXXXX

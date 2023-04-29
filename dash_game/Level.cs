@@ -53,7 +53,7 @@ namespace dash_game
 		public void CreateLevel()
 		{
 			// Read the file that is taken in, currently will only open one file.
-			reader = new StreamReader("../../../Content/Levels/TrialLevel.txt");
+			reader = new StreamReader("../../../Content/Levels/Custom.txt");
 
 			// Create the array based on the first line of the file
 			string[] dimensions = reader.ReadLine().Split(",");
