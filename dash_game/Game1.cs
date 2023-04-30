@@ -105,6 +105,7 @@ namespace dash_game
             Vector2 playerLoc = new Vector2(300f, 300f);
             Texture2D spriteSheet = Content.Load<Texture2D>("SpriteBatchForDash");
             Texture2D speedArrow = Content.Load<Texture2D>("Speed Arrow");
+            Texture2D shuriken = Content.Load<Texture2D>("Shuriken");
             player = new Player(100, new Vector2(300,300), new Rectangle(300, 300, 50, 50), spriteSheet, PlayerState.IdleRight);
             Texture2D hitTexture = new Texture2D(GraphicsDevice, 1, 1);
             hitTexture.SetData(new[] { Color.White });
@@ -115,9 +116,11 @@ namespace dash_game
             // Items to spawn randomly
             random = new Random();
             itemList = new List<Items>();
-            item1 = new Items(new Rectangle(random.Next(100, 500), random.Next(100, 500), 25, 25), "Speed Boost", false, speedArrow);
-            item2 = new Items(new Rectangle(random.Next(100, 500), random.Next(100, 500), 25, 25), "Health Pack", false, speedArrow);
-            item3 = new Items(new Rectangle(random.Next(100, 500), random.Next(100, 500), 25, 25), "Attack Boost", false, speedArrow);
+            item1 = new Items(new Rectangle(500, 330, 25, 25), "Speed Boost", false, speedArrow);
+            item2 = new Items(new Rectangle(600, 350, 25, 25), "Health Pack", false, shuriken);
+            itemList.Add(item1);
+            itemList.Add(item2);
+           
 
             // Create an instance of the adventure modes title screen
             levelSelect = new AdventureMenuScreen();
@@ -155,7 +158,7 @@ namespace dash_game
                     {
                         player.Update(kbState, kbPrevState);
                         horde.Update();
-
+                        
                         if (player.Health <= 0)
                         {
                             currentState = GameState.GameOver;
@@ -174,7 +177,9 @@ namespace dash_game
 
                     foreach(Items i in itemList)
                     {
+                       
                         i.CheckCollision(player);
+                        
                     }
                     
                     break;
@@ -288,14 +293,15 @@ namespace dash_game
                     // Drawing the player and enemies
                     player.Draw(_spriteBatch);
 
-                    foreach (Items i in itemList)
+                    foreach(Items i in itemList)
                     {
-                        if (i.PickedUp == false)
+                        if (!i.PickedUp && player.EnemiesDefeated % 10 <= 5)
                         {
                             i.Draw(_spriteBatch);
                         }
                     }
                     
+                   
                     
                     horde.Draw();
 

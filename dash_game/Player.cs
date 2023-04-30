@@ -36,6 +36,7 @@ namespace dash_game
 
 		private bool dashing;
         private int damage = 5;
+        private int enemiesDefeated;
 
 		// -------------------------------
 		// Properties
@@ -75,6 +76,15 @@ namespace dash_game
         public Vector2 CharacterPosition
         {
             set { characterPosition = value; }
+        }
+
+        /// <summary>
+        /// Allows other classes to access and change the number of enemies defeated
+        /// </summary>
+        public int EnemiesDefeated
+        {
+            get { return enemiesDefeated; }
+            set { enemiesDefeated = value; }
         }
 
 		// -------------------------------

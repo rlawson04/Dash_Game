@@ -70,10 +70,10 @@ namespace dash_game
         /// <param name="spriteBatch"> takes in a texture for the item </param>
         public void Draw(SpriteBatch spriteBatch)
         {
-            
             spriteBatch.Draw(texture, new Vector2(rect.X, rect.Y),
-                new Rectangle(0, 0, 5000, 5000), Color.White, 0, Vector2.Zero, 0.015f,
-                SpriteEffects.None, 0);
+            null, Color.White, 0,Vector2.Zero, .015f,
+            SpriteEffects.None, 0);
+            
         }
 
         /// <summary>
@@ -82,11 +82,17 @@ namespace dash_game
         /// <param name="player"> takes the player instance from the game </param>
         public void CheckCollision(Player player)
         {
-            // When they intersect decrement health
+            // Whenever the player defeats 9 enemies, a new item can be picked up
+            if (player.EnemiesDefeated % 9 == 0 && player.EnemiesDefeated != 0)
+            {
+                pickedUp = false;
+            }
+
+            // When they intersect apply the power up to the 
             if (this.rect.Intersects(player.Rect))
             {
-                pickedUp = true;
                 PowerUp(player);
+                pickedUp = true;
             }
 
             
@@ -101,28 +107,33 @@ namespace dash_game
             // Switch based on the type of power up
             switch (name)
             {
+                // Increases characters movement speed on pickup
                 case "Speed Boost":
 
-                    if (pickedUp)
+                    if (!pickedUp)
                     {
-                        player.MovementSpeed = 5;
+                        player.MovementSpeed += 1;
                     }
                     break;
 
+                // Increases characters health total
                 case "Health Pack":
-                    if (pickedUp)
+                    if (!pickedUp)
                     {
-                        player.Health += 25;
+                        player.Health += 5;
                     }
                     break;
 
+                // Increases characters attack damage
                 case "Attack Boost":
-                    if (pickedUp)
+                    if (!pickedUp)
                     {
                         player.Damage += 5;
                     }
                     break;
             }
         }
+
+       
     }
 }

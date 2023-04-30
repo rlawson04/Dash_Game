@@ -139,6 +139,7 @@ namespace dash_game
 				{
 					enemies.Remove(enemies[i]);
 					score += 10;
+					player.EnemiesDefeated += 1;
 				}
 			}
 		}
