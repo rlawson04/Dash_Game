@@ -32,13 +32,43 @@ namespace dash_game
             {'X', '5', '4', 'X', 'X' },
             {'X', 'X', 'X', 'X', 'X' }
         };
-		private char[,] level2;
-		private char[,] level3;
-		private char[,] level4;
-		private char[,] level5;
+		private char[,] level2 = new char[5, 5]
+        {
+            {'X', 'X', 'X', 'X', 'X' },
+            {'X', '3', 'S', 'X', 'X' },
+            {'X', '5', 'X', 'B', 'X' },
+            {'X', 'I', '4', '3', 'X' },
+            {'X', 'X', 'X', 'X', 'X' }
+        };
+        private char[,] level3 = new char[5, 5]
+        {
+            {'X', 'X', 'X', 'X', 'X' },
+            {'X', '5', 'I', '4', 'X' },
+            {'X', 'S', 'X', 'B', 'X' },
+            {'X', '3', '3', '4', 'X' },
+            {'X', 'X', 'X', 'X', 'X' }
+        };
+        private char[,] level4 = new char[5, 5]
+        {
+            {'X', 'X', 'X', 'X', 'X' },
+            {'X', 'X', 'I', 'X', 'X' },
+            {'X', 'B', '5', 'S', 'X' },
+            {'X', 'X', '4', 'X', 'X' },
+            {'X', 'X', 'X', 'X', 'X' }
+        };
+        private char[,] level5 = new char[7, 7]
+        {
+            {'X', 'X', 'X', 'X', 'X', 'X', 'X' },
+            {'X', 'X', '3', '4', '5', '6', 'X' },
+            {'X', 'X', '2', 'X', 'X', 'I', 'X' },
+            {'X', 'S', '1', 'X', 'X', '7', 'X' },
+            {'X', 'X', 'X', 'X', 'X', '8', 'X' },
+            {'X', 'X', 'B', '9', '9', '9', 'X' },
+            {'X', 'X', 'X', 'X', 'X', 'X', 'X' },
+        };
 
-		// Constructor
-		public AdventureMenuScreen()
+        // Constructor
+        public AdventureMenuScreen()
 		{
 		}
 

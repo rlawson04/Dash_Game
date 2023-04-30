@@ -128,16 +128,23 @@ namespace dash_game
 		/// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
 		{
+			//if its a boss, scale it to be larger than normal
+			float scale = 4f;
+			if (isBoss == true)
+			{
+				scale = 8f;
+			}
+
 			//50/50 chance of facing left or right
 			if (tempRNG == 0)
             {
-				spriteBatch.Draw(spriteSheet, characterPosition, new Rectangle(0, 100, 25, 25), Color.Red, 0, Vector2.Zero, 4f, SpriteEffects.None, 0);
+				spriteBatch.Draw(spriteSheet, characterPosition, new Rectangle(0, 100, 25, 25), Color.Red, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
 			}
 			else if (tempRNG == 1)
             {
 				//if facing left, agjust the position used to draw it to account for horizontal flip
 				adjustedPos = new Vector2(characterPosition.X + 25, characterPosition.Y);
-				spriteBatch.Draw(spriteSheet, adjustedPos, new Rectangle(0, 100, 25, 25), Color.Red, 0, Vector2.Zero, 4f, SpriteEffects.FlipHorizontally, 0);
+				spriteBatch.Draw(spriteSheet, adjustedPos, new Rectangle(0, 100, 25, 25), Color.Red, 0, Vector2.Zero, scale, SpriteEffects.FlipHorizontally, 0);
 			}
         }
 
@@ -145,8 +152,27 @@ namespace dash_game
 		//intended to create a hitbox in front of the enemy
 		public void MeleeAttack(SpriteBatch _spriteBatch, Texture2D hitTexture)
         {
-			//if tempRNG equals zero they are facing right
-			if (tempRNG == 0)
+			//if facing right and is a boss enemy, make a large hitbox to the right of them
+            if (tempRNG == 0 && this.IsBoss == true)
+            {
+                //create a hitbox for the attack, in front of the boss it is tied to, then draw a rectangle representing the hitbox.
+                //This rectangle to be replaced with sword sprite upon suitablt sprite being found
+                hitbox = new Rectangle((int)characterPosition.X + 180, (int)characterPosition.Y + 50, 60, 130);
+                _spriteBatch.Draw(hitTexture, hitbox, Color.Red);
+            }
+
+			//if facing left and a boss, make a large hitbox to the left
+            else if (tempRNG == 1 && this.IsBoss == true)
+            {
+                //create a hitbox for the attack, the rectangle here has to be adjusted slighly to account for the horizontal flip of an
+                //enemy not flipping at the center of the sprite but rather from the origin. Then draw the rectangle representing the hitbox, again
+                //with adjusted coordinates due to the flip.
+                hitbox = new Rectangle((int)adjustedPos.X - 100, (int)adjustedPos.Y + 40, 60, 130);
+                _spriteBatch.Draw(hitTexture, new Rectangle(hitbox.X + 60, hitbox.Y + 10, 60, 130), Color.Red);
+            }
+
+            //if facing right and not a boss
+            else if (tempRNG == 0)
             {
 				//create a hitbox for the attack, in front of the enemy it is tied to, then draw a rectangle representing the hitbox.
 				//This rectangle to be replaced with sword sprite upin suitablt sprite being found
@@ -154,7 +180,7 @@ namespace dash_game
 				_spriteBatch.Draw(hitTexture, hitbox, Color.Red);
 			}
 
-			//these enemieas are facing left
+			//if facing left and not a boss
 			else if (tempRNG == 1)
             {
 				//create a hitbox for the attack, the rectangle here has to be adjusted slighly to account for the horizontal flip of an

@@ -17,7 +17,8 @@ namespace dash_game
             LevelSelect,
             Adventure,
             Stats,
-            GameOver
+            GameOver,
+            Victory
         }
 
         // Fields
@@ -197,6 +198,15 @@ namespace dash_game
                     {
                         currentLevel.Update();
                         currentLevel.MoveRoom();
+
+                        if (player.Health <= 0)
+                        {
+                            currentState = GameState.GameOver;
+                        }
+                        if (currentLevel.LevelBoss.Health <= 0)
+                        {
+                            currentState = GameState.Victory;
+                        }
                     }
 
                     // Set to pause state
@@ -229,6 +239,22 @@ namespace dash_game
                         player.Health = 100;
                         horde.NumEnemies = 3;
                         horde.Score = 0;
+                        player.MovementSpeed = 3;
+                    }
+                    break;
+
+                case GameState.Victory:
+                    // Checks if the user has pressed the spacebar and sends them back to the title screen
+                    if (kbState.IsKeyUp(Keys.Space) && kbPrevState.IsKeyDown(Keys.Space))
+                    {
+                        //Reset all stats once a level is beaten, does basically the same thing as game over, the main difference is what is drawn to the screen
+                        currentState = GameState.Title;
+                        horde.Wave = 0;
+                        horde.Enemies.Clear();
+                        player.Health = 100;
+                        horde.NumEnemies = 3;
+                        horde.Score = 0;
+                        player.MovementSpeed = 3;
                     }
                     break;
             }
@@ -334,6 +360,17 @@ namespace dash_game
 
                     // Draws a game over message
                     _spriteBatch.DrawString(titleFont, "GAME OVER", new Vector2(640, 368) - (titleFont.MeasureString("GAME OVER") / 2), Color.Black);
+                    _spriteBatch.DrawString(gameFont, "Press space to return to title screen",
+                        new Vector2(640, 500) - (gameFont.MeasureString("Press space to return to title screen") / 2), Color.Black);
+                    break;
+
+                //draws the victory Screen
+                case GameState.Victory:
+                    // Draws the background shader
+                    _spriteBatch.Draw(background, new Rectangle(0, 0, background.Width, background.Height), shader);
+
+                    // Draws a game over message
+                    _spriteBatch.DrawString(titleFont, "VICTORY!", new Vector2(640, 368) - (titleFont.MeasureString("VICTORY!") / 2), Color.Black);
                     _spriteBatch.DrawString(gameFont, "Press space to return to title screen",
                         new Vector2(640, 500) - (gameFont.MeasureString("Press space to return to title screen") / 2), Color.Black);
                     break;

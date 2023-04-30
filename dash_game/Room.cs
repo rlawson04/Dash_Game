@@ -104,6 +104,8 @@ namespace dash_game
 			set { cleared = value; }
 		}
 
+		public List<Enemy> Enemies { get { return enemies; } }
+
         // Constructor
         public Room(char data, Player player, Texture2D charSprites, SpriteBatch spriteBatch, Texture2D doorTexture, Texture2D hitTexture, Texture2D itemSprites)
 		{
@@ -150,9 +152,9 @@ namespace dash_game
 			else if (data == 'B')
 			{
 				// Add the boss enemy as the only enemy in the list
-				enemies.Add(new Enemy(50,
+				enemies.Add(new Enemy(500,
 						new Vector2(500, 400),
-						new Rectangle(500, 400, 100, 100),
+						new Rectangle(500, 400, 150, 150),
 						charSprites,
 						PlayerState.IdleRight,
 						true,
@@ -240,6 +242,12 @@ namespace dash_game
                         {
                             enemy.Health -= player.Damage;
                         }
+
+                        //checks for collision with hitbox of attack
+                        if (enemy.Hitbox.Intersects(player.Rect) && enemy.Atk == true)
+                        {
+                            player.Health -= enemy.Damage;
+                        }
                     }
 
                     // If an enemies health is zero remove it
@@ -313,6 +321,24 @@ namespace dash_game
                     foreach (Enemy enemy in enemies)
                     {
                         enemy.Draw(spriteBatch);
+
+                        //update the enemy attack timer
+                        enemy.AtkTimer = enemy.AtkTimer + 1;
+
+                        //if the enemies attack timer is greater than 120, set their atk bool to true, thereby triggering their melee attack
+                        if (enemy.AtkTimer > 120)
+                        {
+                            enemy.Atk = true;
+                            enemy.MeleeAttack(spriteBatch, hitTexture);
+
+                            //if the attack timer is greater than 130, end the attack by setting it to 0 and resetting the attack bool to false
+                            //this results in a 10 frame attack
+                            if (enemy.AtkTimer > 130)
+                            {
+                                enemy.AtkTimer = 0;
+                                enemy.Atk = false;
+                            }
+                        }
                     }
                     break;
             }
