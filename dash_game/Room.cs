@@ -38,10 +38,10 @@ namespace dash_game
 		private bool cleared;
 
 		// Rectangles for the doors and a texture
-		private Rectangle northDoor = new Rectangle((1223 / 2), 78, 25, 50);
-		private Rectangle southDoor = new Rectangle((1223 / 2), 663, 25, 50);
-		private Rectangle eastDoor = new Rectangle(1228, 339, 50, 25);
-		private Rectangle westDoor = new Rectangle(12, 339, 50, 25);
+		private Rectangle northDoor = new Rectangle((1223 / 2) - 20, 78, 60, 60);
+		private Rectangle southDoor = new Rectangle((1223 / 2) - 20, 600, 60, 60);
+		private Rectangle eastDoor = new Rectangle(1200, 339, 60, 60);
+		private Rectangle westDoor = new Rectangle(50, 339, 60, 60);
 		private Texture2D doorTexture;
 
 		// Needed for draw method
@@ -325,22 +325,34 @@ namespace dash_game
 		{
 			if (north != null && cleared)
 			{
-				spriteBatch.Draw(doorTexture, northDoor, Color.White);
+				spriteBatch.Draw(doorTexture, 
+					new Vector2(northDoor.X, northDoor.Y), 
+					null, Color.White, 0f, Vector2.Zero, 
+					.015f, SpriteEffects.None, 0);
 			}
 
 			if (south != null && cleared)
 			{
-				spriteBatch.Draw(doorTexture, southDoor, Color.White);
+				spriteBatch.Draw(doorTexture, 
+					new Vector2(southDoor.X, southDoor.Y), 
+					null, Color.White, 0f, Vector2.Zero, 
+					.015f, SpriteEffects.None, 0);
 			}
 
 			if (east != null && cleared)
 			{
-				spriteBatch.Draw(doorTexture, eastDoor, Color.White);
+				spriteBatch.Draw(doorTexture, 
+					new Vector2(eastDoor.X +50, eastDoor.Y), 
+					null, Color.White, 1.5708f, Vector2.Zero, 
+					.015f, SpriteEffects.None, 0);
 			}
 
 			if (west != null && cleared)
 			{
-				spriteBatch.Draw(doorTexture, westDoor, Color.White);
+				spriteBatch.Draw(doorTexture, 
+					new Vector2(westDoor.X + 50, westDoor.Y), 
+					null, Color.White, 1.5708f, Vector2.Zero, 
+					.015f, SpriteEffects.None, 0);
 			}
 		}
 
@@ -353,28 +365,28 @@ namespace dash_game
 			if (north != null && northDoor.Intersects(player.Rect) && cleared)
 			{
 				player.CharacterPosition = new Vector2((1223 / 2), 643);
-				player.Rect = new Rectangle((1223 / 2), 623, 25, 25);
+				player.Rect = new Rectangle((1223 / 2), 623, 50, 50);
 				return north;
 			}
 
 			if (south != null && southDoor.Intersects(player.Rect) && cleared)
 			{
                 player.CharacterPosition = new Vector2((1223 / 2), 118);
-                player.Rect = new Rectangle((1223 / 2), 138, 25, 25);
+                player.Rect = new Rectangle((1223 / 2), 138, 50, 50);
                 return south;
 			}
 
 			if (east != null && eastDoor.Intersects(player.Rect) && cleared)
 			{
                 player.CharacterPosition = new Vector2(52, 339);
-                player.Rect = new Rectangle(52, 339, 25, 25);
+                player.Rect = new Rectangle(52, 339, 50, 50);
                 return east;
 			}
 
 			if (west != null && westDoor.Intersects(player.Rect) && cleared)
 			{
                 player.CharacterPosition = new Vector2(1208, 339);
-                player.Rect = new Rectangle(1208, 339, 25, 25);
+                player.Rect = new Rectangle(1208, 339, 50, 50);
                 return west;
 			}
 

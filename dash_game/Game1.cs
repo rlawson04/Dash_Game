@@ -110,10 +110,10 @@ namespace dash_game
             hitTexture.SetData(new[] { Color.White });
 
             // Texture for the doors in adventure
-            Texture2D doorTexture = Content.Load<Texture2D>("SpriteBatchForDash");
+            Texture2D doorTexture = Content.Load<Texture2D>("Door");
 
-            // Items to spawn randomly
-            random = new Random();
+            
+            // The two main items for the horde mode
             itemList = new List<Items>();
             item1 = new Items(new Rectangle(500, 330, 25, 25), "Speed Boost", false, speedArrow);
             item2 = new Items(new Rectangle(600, 350, 25, 25), "Health Pack", false, shuriken);
