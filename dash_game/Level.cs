@@ -27,12 +27,18 @@ namespace dash_game
 		// An instance of the player that will be passed from Game 1
 		private Player player;
 
+		//field for boss for ending level
+		private Enemy levelBoss;
+
 		// Fields that deal with sprites and drawing of assets
         private SpriteBatch spriteBatch;
         private Texture2D charSprites;
 		private Texture2D itemSprites;
 		private Texture2D doorTexture;
 		private Texture2D hitTexture;
+
+		//property for Boss
+		public Enemy LevelBoss { get { return levelBoss; } }
 
 		// Constructor
 		public Level(Player player, string fileName, Texture2D charSprites, Texture2D itemSprites, SpriteBatch spriteBatch, Texture2D doorTexture, Texture2D hitTexture)
@@ -120,6 +126,11 @@ namespace dash_game
                     {
                         rooms[i, j] = new Room(data[i, j], player, charSprites, spriteBatch, doorTexture, hitTexture, itemSprites);
                         current = rooms[i, j];
+                    }
+                    else if (data[i, j] == 'B')
+                    {
+                        rooms[i, j] = new Room(data[i, j], player, charSprites, spriteBatch, doorTexture, hitTexture, itemSprites);
+                        levelBoss = rooms[i, j].Enemies[0];
                     }
                     else
                     {
