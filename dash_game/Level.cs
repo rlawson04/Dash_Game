@@ -232,7 +232,7 @@ namespace dash_game
 		/// </summary>
 		public void Draw()
 		{
-			w current.Draw();
+			current.Draw();
 			current.DrawDoors();
 		}
 	}
