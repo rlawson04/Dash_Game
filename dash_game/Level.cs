@@ -86,6 +86,7 @@ namespace dash_game
 						rooms[i, j] = new Room(data[j], player, charSprites, spriteBatch, doorTexture, hitTexture, itemSprites);
 						this.levelBoss = rooms[i, j].Enemies[0];
 					}
+					else
 					{
 						rooms[i, j] = new Room(data[j], player, charSprites, spriteBatch, doorTexture, hitTexture, itemSprites);
 					}
