@@ -390,28 +390,28 @@ namespace dash_game
 		{
 			if (north != null && northDoor.Intersects(player.Rect) && cleared)
 			{
-				player.CharacterPosition = new Vector2((1223 / 2), 620);
+				player.CharacterPosition = new Vector2((1223 / 2), 643);
 				player.Rect = new Rectangle((1223 / 2), 623, 50, 50);
 				return north;
 			}
 
 			if (south != null && southDoor.Intersects(player.Rect) && cleared)
 			{
-                player.CharacterPosition = new Vector2((1223 / 2), 135);
+                player.CharacterPosition = new Vector2((1223 / 2), 118);
                 player.Rect = new Rectangle((1223 / 2), 138, 50, 50);
                 return south;
 			}
 
 			if (east != null && eastDoor.Intersects(player.Rect) && cleared)
 			{
-                player.CharacterPosition = new Vector2(70, 339);
+                player.CharacterPosition = new Vector2(52, 339);
                 player.Rect = new Rectangle(52, 339, 50, 50);
                 return east;
 			}
 
 			if (west != null && westDoor.Intersects(player.Rect) && cleared)
 			{
-                player.CharacterPosition = new Vector2(1150, 339);
+                player.CharacterPosition = new Vector2(1208, 339);
                 player.Rect = new Rectangle(1208, 339, 50, 50);
                 return west;
 			}
