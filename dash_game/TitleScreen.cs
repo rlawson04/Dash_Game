@@ -77,7 +77,7 @@ namespace dash_game
 			}
 			else
 			{
-				return 3;
+				return 4;
 			}
 		}
 	}

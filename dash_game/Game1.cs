@@ -55,6 +55,10 @@ namespace dash_game
         // An int that tracks what state to move to
         private int state;
 
+        //ints for highscore and wave
+        private int highScore = 0;
+        private int highWave = 0;
+
         // Bool to see if the game is paused
         private bool paused = false;
 
@@ -158,7 +162,18 @@ namespace dash_game
                     {
                         player.Update(kbState, kbPrevState);
                         horde.Update();
-                        
+
+                        //update high score and higehst wave if they are higher than that already recorded
+                        if (horde.Score > highScore)
+                        {
+                            highScore = horde.Score;
+                        }
+                        if (horde.Wave > highWave)
+                        {
+                            highWave = horde.Wave;
+                        }
+
+                        //end game if player is out of health
                         if (player.Health <= 0)
                         {
                             currentState = GameState.GameOver;
@@ -351,6 +366,16 @@ namespace dash_game
                 case GameState.Stats:
                     // Draws the background shader
                     _spriteBatch.Draw(background, new Rectangle(0, 0, background.Width, background.Height), shader);
+
+                    //draw return to menu text
+                    _spriteBatch.DrawString(gameFont, "Press space to return to title screen",
+                        new Vector2(640, 500) - (gameFont.MeasureString("Press space to return to title screen") / 2), Color.Black);
+
+                    //draw score / wave
+                    _spriteBatch.DrawString(gameFont, "High Score: " + highScore,
+                        new Vector2(640, 300) - (gameFont.MeasureString("High Score: " + highScore) / 2), Color.Black);
+                    _spriteBatch.DrawString(gameFont, "Highest Wave: " + highWave,
+                        new Vector2(640, 400) - (gameFont.MeasureString("Highest Wave: " + highWave) / 2), Color.Black);
                     break;
 
                 // Draws the game over screen
